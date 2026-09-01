@@ -1,0 +1,261 @@
+{
+  "activities": [
+    {
+      "id": "surfing",
+      "name": "Surfing",
+      "icon": "🏄‍♂️",
+      "category": "Water Sports",
+      "description": "Catching ocean waves and swell"
+    },
+    {
+      "id": "cycling",
+      "name": "Cycling",
+      "icon": "🚴",
+      "category": "Cardio",
+      "description": "Road and trail bike riding"
+    },
+    {
+      "id": "running",
+      "name": "Running",
+      "icon": "🏃",
+      "category": "Cardio",
+      "description": "Outdoor jogging and sprints"
+    },
+    {
+      "id": "hiking",
+      "name": "Hiking",
+      "icon": "🥾",
+      "category": "Outdoor",
+      "description": "Mountain trails and scenic walks"
+    },
+    {
+      "id": "swimming",
+      "name": "Swimming",
+      "icon": "🏊",
+      "category": "Water Sports",
+      "description": "Open water and outdoor pools"
+    },
+    {
+      "id": "sailing",
+      "name": "Sailing",
+      "icon": "⛵",
+      "category": "Water Sports",
+      "description": "Windsurfing and boat cruising"
+    },
+    {
+      "id": "skateboarding",
+      "name": "Skateboarding",
+      "icon": "🛹",
+      "category": "Street",
+      "description": "Park and street cruising"
+    },
+    {
+      "id": "golf",
+      "name": "Golf",
+      "icon": "⛳",
+      "category": "Sports",
+      "description": "18-hole outdoor fairway rounds"
+    },
+    {
+      "id": "photography",
+      "name": "Photography",
+      "icon": "📸",
+      "category": "Creative",
+      "description": "Golden hour and landscape shoots"
+    },
+    {
+      "id": "yoga",
+      "name": "Yoga",
+      "icon": "🧘",
+      "category": "Wellness",
+      "description": "Outdoor park flow & studio balance"
+    },
+    {
+      "id": "tennis",
+      "name": "Tennis",
+      "icon": "🎾",
+      "category": "Sports",
+      "description": "Hard court and grass court matches"
+    },
+    {
+      "id": "camping",
+      "name": "Camping",
+      "icon": "⛺",
+      "category": "Outdoor",
+      "description": "Stargazing and overnight camps"
+    }
+  ],
+  "rules": [
+    {
+      "activityId": "surfing",
+      "conditions": ["Sunny", "Partly Cloudy", "Breezy", "Cloudy", "Clear"],
+      "minTemp": 18,
+      "maxTemp": 34,
+      "maxPrecipitation": 25,
+      "minWind": 8,
+      "maxWind": 32,
+      "title": "Great weather outside, go surfing! 🏄‍♂️",
+      "subtitle": "Moderate offshore wind and swell are aligning nicely.",
+      "badge": "Prime Waves",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "cycling",
+      "conditions": ["Sunny", "Partly Cloudy", "Clear", "Cloudy"],
+      "minTemp": 12,
+      "maxTemp": 30,
+      "maxPrecipitation": 15,
+      "minWind": 0,
+      "maxWind": 24,
+      "title": "Ideal crisp breeze for cycling! 🚴",
+      "subtitle": "Dry asphalt and cool air create perfect road cycling conditions.",
+      "badge": "Perfect Ride",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "running",
+      "conditions": ["Sunny", "Partly Cloudy", "Clear", "Cloudy"],
+      "minTemp": 10,
+      "maxTemp": 26,
+      "maxPrecipitation": 15,
+      "minWind": 0,
+      "maxWind": 20,
+      "title": "Prime jogging weather right now! 🏃",
+      "subtitle": "Optimal temperature for long distance pacing with low humidity.",
+      "badge": "Great Pace",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "sailing",
+      "conditions": ["Sunny", "Partly Cloudy", "Breezy", "Clear"],
+      "minTemp": 16,
+      "maxTemp": 32,
+      "maxPrecipitation": 20,
+      "minWind": 12,
+      "maxWind": 35,
+      "title": "Steady gusts detected: Perfect for sailing! ⛵",
+      "subtitle": "Consistent wind speed of 12-25 km/h for open water sails.",
+      "badge": "Wind Favorable",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "photography",
+      "conditions": ["Sunny", "Partly Cloudy", "Golden Hour", "Clear"],
+      "minTemp": 10,
+      "maxTemp": 36,
+      "maxPrecipitation": 10,
+      "minWind": 0,
+      "maxWind": 30,
+      "title": "Stunning natural lighting for photography! 📸",
+      "subtitle": "Soft cloud diffusion creates cinematic golden hour shadows.",
+      "badge": "Golden Light",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "hiking",
+      "conditions": ["Sunny", "Partly Cloudy", "Clear", "Cloudy"],
+      "minTemp": 12,
+      "maxTemp": 28,
+      "maxPrecipitation": 10,
+      "minWind": 0,
+      "maxWind": 22,
+      "title": "Clear mountain visibility for hiking! 🥾",
+      "subtitle": "Low trail mud risk and clean mountain horizon views.",
+      "badge": "Trail Open",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "swimming",
+      "conditions": ["Sunny", "Clear"],
+      "minTemp": 24,
+      "maxTemp": 38,
+      "maxPrecipitation": 10,
+      "minWind": 0,
+      "maxWind": 18,
+      "title": "Warm sunshine: Take a refreshing swim! 🏊",
+      "subtitle": "High ambient temperature makes open water pools irresistible.",
+      "badge": "Warm & Sunny",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "skateboarding",
+      "conditions": ["Sunny", "Partly Cloudy", "Clear", "Cloudy"],
+      "minTemp": 14,
+      "maxTemp": 30,
+      "maxPrecipitation": 5,
+      "minWind": 0,
+      "maxWind": 18,
+      "title": "Dry skate park pavement ready for sessions! 🛹",
+      "subtitle": "Zero moisture on concrete with mild temperature.",
+      "badge": "Dry Pavement",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "golf",
+      "conditions": ["Sunny", "Partly Cloudy", "Clear"],
+      "minTemp": 16,
+      "maxTemp": 30,
+      "maxPrecipitation": 10,
+      "minWind": 0,
+      "maxWind": 16,
+      "title": "Low wind on the fairway: Great day for golf! ⛳",
+      "subtitle": "Mild air resistance will keep your drive on target.",
+      "badge": "Fairway Ready",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "yoga",
+      "conditions": ["Rainy", "Thunderstorm", "Drizzle", "Showers", "Overcast"],
+      "minTemp": -10,
+      "maxTemp": 45,
+      "maxPrecipitation": 100,
+      "minWind": 0,
+      "maxWind": 100,
+      "title": "Rain outside: Relax with indoor yoga flow! 🧘",
+      "subtitle": "Atmospheric sound of rainfall pairs beautifully with meditation.",
+      "badge": "Indoor Flow",
+      "sentiment": "cozy"
+    },
+    {
+      "activityId": "tennis",
+      "conditions": ["Sunny", "Partly Cloudy", "Clear"],
+      "minTemp": 16,
+      "maxTemp": 29,
+      "maxPrecipitation": 5,
+      "minWind": 0,
+      "maxWind": 16,
+      "title": "Dry court and light wind: Perfect for tennis! 🎾",
+      "subtitle": "Ball bounce is true with excellent court traction.",
+      "badge": "Match Time",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "camping",
+      "conditions": ["Clear", "Partly Cloudy", "Sunny"],
+      "minTemp": 14,
+      "maxTemp": 26,
+      "maxPrecipitation": 10,
+      "minWind": 0,
+      "maxWind": 18,
+      "title": "Clear starlit sky for campfire camping! ⛺",
+      "subtitle": "Zero storm threat and crisp night atmospheric clarity.",
+      "badge": "Starlit Camp",
+      "sentiment": "positive"
+    }
+  ],
+  "fallbacks": {
+    "rainy": {
+      "title": "Passing showers: Great time for indoor wellness & yoga! 🧘",
+      "subtitle": "Keep an umbrella handy if stepping out. Outdoor activities on pause.",
+      "badge": "Rain Advisory",
+      "sentiment": "neutral"
+    },
+    "default": {
+      "title": "Pleasant conditions outside! 🌤️",
+      "subtitle": "Check your favorite outdoor activities for today's forecast window.",
+      "badge": "Good Day",
+      "sentiment": "positive"
+    }
+  }
+}
+
