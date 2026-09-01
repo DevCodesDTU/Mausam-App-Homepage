@@ -1,0 +1,212 @@
+import { StyleSheet } from 'react-native'
+
+export const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#8B5CF6',
+  },
+  scrollContent: {
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 90,
+    alignItems: 'center',
+  },
+  mainCard: {
+    width: '100%',
+    maxWidth: 420,
+    borderRadius: 36,
+    paddingVertical: 24,
+    paddingHorizontal: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.75)',
+  },
+  headerBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  menuIconBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dotsIconVertical: {
+    height: 16,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  miniMenuDot: {
+    width: 3.5,
+    height: 3.5,
+    borderRadius: 2,
+    backgroundColor: '#6B7280',
+  },
+  locationTitleBox: {
+    alignItems: 'center',
+  },
+  locationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  locationPinIcon: {
+    fontSize: 14,
+  },
+  locationName: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#2E1065',
+  },
+  dateTimeText: {
+    fontSize: 11,
+    color: '#6B7280',
+    fontWeight: '500',
+    marginTop: 2,
+  },
+  plusIconBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  plusText: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#6D28D9',
+    lineHeight: 24,
+  },
+  heroWeatherRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginVertical: 10,
+    paddingHorizontal: 8,
+  },
+  tempLeftCol: {
+    flex: 1,
+  },
+  heroTempNumber: {
+    fontSize: 64,
+    fontWeight: '900',
+    color: '#4C1D95',
+    letterSpacing: -2,
+    lineHeight: 70,
+  },
+  heroConditionText: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#6D28D9',
+    marginTop: 2,
+  },
+  heroArtRightCol: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  metricsStrip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    backgroundColor: 'rgba(255, 255, 255, 0.65)',
+    borderRadius: 22,
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    marginVertical: 14,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.9)',
+  },
+  metricItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  metricIcon: {
+    fontSize: 16,
+    marginBottom: 4,
+  },
+  metricValue: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#2E1065',
+  },
+  metricLabel: {
+    fontSize: 10,
+    color: '#6B7280',
+    fontWeight: '600',
+    marginTop: 2,
+  },
+  bottomSpacer: {
+    height: 40,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(46, 16, 101, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalCard: {
+    width: '100%',
+    maxWidth: 360,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 28,
+    padding: 24,
+    shadowColor: '#4C1D95',
+    shadowOpacity: 0.25,
+    shadowRadius: 20,
+    elevation: 10,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#2E1065',
+    marginBottom: 4,
+  },
+  modalSub: {
+    fontSize: 12,
+    color: '#6B7280',
+    marginBottom: 16,
+  },
+  modalLocItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    borderRadius: 16,
+    marginBottom: 8,
+    backgroundColor: '#F9FAFB',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  modalLocItemActive: {
+    backgroundColor: '#F3E8FF',
+    borderColor: '#C084FC',
+  },
+  modalLocLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  modalLocPin: {
+    fontSize: 16,
+  },
+  modalLocName: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#1F2937',
+  },
+  modalLocRegion: {
+    fontSize: 11,
+    color: '#6B7280',
+  },
+  modalLocTemp: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#6D28D9',
+  },
+})
+
