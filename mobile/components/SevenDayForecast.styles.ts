@@ -8,9 +8,11 @@ export const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#6B7280',
+    color: '#6D28D9',
     marginBottom: 10,
     marginLeft: 4,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   scrollList: {
     flexDirection: 'row',
@@ -20,7 +22,7 @@ export const styles = StyleSheet.create({
   },
   dayPill: {
     width: 62,
-    height: 108,
+    height: 110,
     borderRadius: 24,
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -29,16 +31,16 @@ export const styles = StyleSheet.create({
   },
   dayPillActive: {
     backgroundColor: '#6D28D9',
-    borderColor: '#7C3AED',
-    shadowColor: '#6D28D9',
+    borderColor: '#A78BFA',
+    shadowColor: '#5B21B6',
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.35,
     shadowRadius: 10,
     elevation: 6,
   },
   dayPillInactive: {
-    backgroundColor: 'rgba(255, 255, 255, 0.45)',
-    borderColor: 'rgba(255, 255, 255, 0.75)',
+    backgroundColor: 'rgba(255, 255, 255, 0.52)',
+    borderColor: 'rgba(255, 255, 255, 0.85)',
   },
   dayLabel: {
     fontSize: 11,
@@ -73,7 +75,7 @@ export const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   tempInactive: {
-    color: '#4B5563',
+    color: '#2E1065',
   },
   lowTempActive: {
     color: '#DDD6FE',
@@ -82,4 +84,3 @@ export const styles = StyleSheet.create({
     color: '#9CA3AF',
   },
 })
-

@@ -2,10 +2,10 @@ import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    backgroundColor: 'rgba(255, 255, 255, 0.72)',
     borderRadius: 28,
     borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.9)',
+    borderColor: 'rgba(255, 255, 255, 0.88)',
     padding: 18,
     marginTop: 14,
     shadowColor: '#4C1D95',
@@ -36,12 +36,12 @@ export const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   matchBadge: {
-    backgroundColor: 'rgba(109, 40, 217, 0.15)',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
+    backgroundColor: 'rgba(109, 40, 217, 0.12)',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'rgba(109, 40, 217, 0.3)',
+    borderColor: 'rgba(109, 40, 217, 0.25)',
   },
   matchBadgeText: {
     fontSize: 11,
@@ -52,17 +52,17 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 14,
-    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    backgroundColor: 'rgba(255, 255, 255, 0.82)',
     borderRadius: 20,
     padding: 14,
-    borderWidth: 1,
+    borderWidth: 1.2,
     borderColor: '#EDE9FE',
   },
   iconCircle: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#F3E8FF',
+    backgroundColor: 'rgba(243, 232, 255, 0.9)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1.5,
@@ -90,7 +90,7 @@ export const styles = StyleSheet.create({
     marginTop: 12,
     paddingTop: 10,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(109, 40, 217, 0.08)',
+    borderTopColor: 'rgba(109, 40, 217, 0.1)',
   },
   otherTitle: {
     fontSize: 11,
@@ -106,9 +106,9 @@ export const styles = StyleSheet.create({
   miniPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
     paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingVertical: 6,
     borderRadius: 14,
     borderWidth: 1,
     borderColor: '#DDD6FE',
@@ -142,4 +142,3 @@ export const styles = StyleSheet.create({
     color: '#7C3AED',
   },
 })
-

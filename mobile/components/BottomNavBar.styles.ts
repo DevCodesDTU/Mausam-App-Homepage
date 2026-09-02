@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: 'rgba(255, 255, 255, 0.75)',
+    backgroundColor: 'rgba(255, 255, 255, 0.78)',
     borderWidth: 1.5,
     borderColor: 'rgba(255, 255, 255, 0.95)',
     borderRadius: 36,
@@ -165,4 +165,3 @@ export const styles = StyleSheet.create({
     backgroundColor: '#6D28D9',
   },
 })
-

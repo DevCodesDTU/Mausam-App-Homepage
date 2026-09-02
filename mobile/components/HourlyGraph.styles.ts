@@ -83,16 +83,22 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 8,
     gap: 6,
+    backgroundColor: 'rgba(255, 255, 255, 0.55)',
+    paddingVertical: 5,
+    paddingHorizontal: 12,
+    borderRadius: 14,
+    alignSelf: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.8)',
   },
   activeInfoTime: {
     fontSize: 11,
     color: '#6B7280',
-    fontWeight: '500',
+    fontWeight: '600',
   },
   activeInfoTemp: {
     fontSize: 11,
     color: '#4C1D95',
-    fontWeight: '700',
+    fontWeight: '800',
   },
 })
-
