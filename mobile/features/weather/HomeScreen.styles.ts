@@ -432,6 +432,86 @@ export const styles = StyleSheet.create({
     marginTop: 3,
   },
 
+  // Air Quality & Environmental Composition Block
+  aqiCard: {
+    borderRadius: 22,
+    padding: 18,
+    borderWidth: 1,
+    marginBottom: 16,
+  },
+  aqiTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  aqiTitleGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  aqiIcon: {
+    fontSize: 18,
+  },
+  aqiTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+    letterSpacing: 0.3,
+    textTransform: 'uppercase',
+  },
+  aqiStatusBadge: {
+    paddingVertical: 3,
+    paddingHorizontal: 10,
+    borderRadius: 12,
+  },
+  aqiStatusText: {
+    fontSize: 11,
+    fontWeight: '800',
+    textTransform: 'uppercase',
+  },
+  aqiHeroRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    gap: 8,
+    marginBottom: 6,
+  },
+  aqiMainValue: {
+    fontSize: 36,
+    fontWeight: '900',
+    letterSpacing: -1,
+    includeFontPadding: false,
+  },
+  aqiScaleLabel: {
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  aqiAdvice: {
+    fontSize: 12.5,
+    lineHeight: 17,
+    marginBottom: 14,
+  },
+  aqiMetricsGrid: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingTop: 12,
+    borderTopWidth: 1,
+  },
+  aqiMetricCol: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  aqiMetricVal: {
+    fontSize: 14,
+    fontWeight: '800',
+    marginBottom: 2,
+  },
+  aqiMetricName: {
+    fontSize: 10,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+  },
+
   // 7-Day Horizon
   sevenDayCard: {
     backgroundColor: '#0F1524',

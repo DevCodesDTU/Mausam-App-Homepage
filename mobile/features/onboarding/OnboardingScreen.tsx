@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import {
   View,
   Text,
+  TextInput,
   ScrollView,
   Pressable,
   SafeAreaView,
@@ -22,7 +23,19 @@ export function OnboardingScreen({
   theme = 'dark',
 }: OnboardingScreenProps) {
   const [selectedIds, setSelectedIds] = useState<string[]>(['surfing', 'cycling'])
+  const [searchQuery, setSearchQuery] = useState('')
   const colors = themes[theme]
+
+  const filteredActivities = useMemo(() => {
+    if (!searchQuery.trim()) return AVAILABLE_ACTIVITIES
+    const q = searchQuery.toLowerCase().trim()
+    return AVAILABLE_ACTIVITIES.filter(
+      (act) =>
+        act.name.toLowerCase().includes(q) ||
+        act.category.toLowerCase().includes(q) ||
+        act.description.toLowerCase().includes(q)
+    )
+  }, [searchQuery])
 
   const toggleActivity = (id: string) => {
     setSelectedIds((prev) =>
@@ -45,55 +58,93 @@ export function OnboardingScreen({
           {/* Header */}
           <View style={styles.header}>
             <View style={[styles.stepBadge, { backgroundColor: colors.badgeBg, borderColor: colors.border }]}>
-              <Text style={[styles.stepBadgeText, { color: colors.accent }]}>Passions & Sports</Text>
+              <Text style={[styles.stepBadgeText, { color: colors.accent }]}>Preferences & Motion</Text>
             </View>
             <Text style={[styles.title, { color: colors.textPrimary }]}>
-              Choose Your Outdoor Activities
+              Select Your Outdoor Activities
             </Text>
             <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-              Mausam continuously evaluates wind, swell, UV, and temperatures to suggest peak performance windows.
+              Choose sports to personalize forecast scoring, wind telemetry, and prime activity hours.
             </Text>
           </View>
 
-          {/* Activities Grid */}
-          <View style={styles.grid}>
-            {AVAILABLE_ACTIVITIES.map((activity: Activity) => {
-              const isSelected = selectedIds.includes(activity.id)
-
-              return (
-                <Pressable
-                  key={activity.id}
-                  onPress={() => toggleActivity(activity.id)}
-                  style={[
-                    styles.activityCard,
-                    { backgroundColor: colors.cardSecondary, borderColor: colors.border },
-                    isSelected && { borderColor: colors.accent, backgroundColor: colors.accentBg },
-                  ]}
-                >
-                  <View style={[styles.iconBox, { backgroundColor: colors.card }]}>
-                    <Text style={styles.activityIcon}>{activity.icon}</Text>
-                  </View>
-
-                  <View style={styles.activityInfo}>
-                    <Text style={[styles.activityName, { color: colors.textPrimary }]}>{activity.name}</Text>
-                    <Text style={[styles.activityDesc, { color: colors.textSecondary }]}>{activity.description}</Text>
-                  </View>
-
-                  <View
-                    style={[
-                      styles.checkCircle,
-                      { borderColor: colors.border },
-                      isSelected && { backgroundColor: colors.accent, borderColor: colors.accent },
-                    ]}
-                  >
-                    {isSelected && <Text style={[styles.checkMark, { color: colors.card }]}>✓</Text>}
-                  </View>
-                </Pressable>
-              )
-            })}
+          {/* Search Bar */}
+          <View style={[styles.searchContainer, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <Text style={styles.searchIcon}>🔍</Text>
+            <TextInput
+              style={[styles.searchInput, { color: colors.textPrimary }]}
+              placeholder="Search activities (e.g. surf, cycling, trail)..."
+              placeholderTextColor={colors.textMuted}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+            />
+            {searchQuery.length > 0 && (
+              <Pressable
+                onPress={() => setSearchQuery('')}
+                style={styles.clearBtn}
+                hitSlop={8}
+              >
+                <Text style={[styles.clearBtnText, { color: colors.textMuted }]}>✕</Text>
+              </Pressable>
+            )}
           </View>
 
-          {/* Continue Action */}
+          {/* 2-Cards-Per-Line Grid */}
+          <View style={styles.grid}>
+            {filteredActivities.length === 0 ? (
+              <View style={[styles.emptyBox, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+                  No activities match "{searchQuery}"
+                </Text>
+              </View>
+            ) : (
+              filteredActivities.map((activity: Activity) => {
+                const isSelected = selectedIds.includes(activity.id)
+
+                return (
+                  <Pressable
+                    key={activity.id}
+                    onPress={() => toggleActivity(activity.id)}
+                    style={[
+                      styles.activityCard,
+                      { backgroundColor: colors.card, borderColor: colors.border },
+                      isSelected && { borderColor: colors.accent, backgroundColor: colors.accentBg },
+                    ]}
+                  >
+                    <View style={styles.cardTopRow}>
+                      <View style={[styles.iconBox, { backgroundColor: colors.cardSecondary }]}>
+                        <Text style={styles.activityIcon}>{activity.icon}</Text>
+                      </View>
+
+                      <View
+                        style={[
+                          styles.checkCircle,
+                          { borderColor: colors.border },
+                          isSelected && { backgroundColor: colors.accent, borderColor: colors.accent },
+                        ]}
+                      >
+                        {isSelected && <Text style={[styles.checkMark, { color: '#FFFFFF' }]}>✓</Text>}
+                      </View>
+                    </View>
+
+                    <View style={styles.activityInfo}>
+                      <Text style={[styles.activityName, { color: colors.textPrimary }]}>
+                        {activity.name}
+                      </Text>
+                      <Text
+                        style={[styles.activityDesc, { color: colors.textSecondary }]}
+                        numberOfLines={2}
+                      >
+                        {activity.description}
+                      </Text>
+                    </View>
+                  </Pressable>
+                )
+              })
+            )}
+          </View>
+
+          {/* Submit Action */}
           <Pressable
             onPress={handleContinue}
             disabled={selectedIds.length === 0}
@@ -104,7 +155,7 @@ export function OnboardingScreen({
             ]}
           >
             <Text style={styles.submitBtnText}>
-              Launch Atmospheric Horizon ({selectedIds.length} chosen) →
+              Confirm Preferences ({selectedIds.length} Selected)
             </Text>
           </Pressable>
         </View>

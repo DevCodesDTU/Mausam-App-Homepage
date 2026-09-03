@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   header: {
-    marginBottom: 28,
+    marginBottom: 20,
   },
   stepBadge: {
     alignSelf: 'flex-start',
@@ -43,54 +43,103 @@ export const styles = StyleSheet.create({
     lineHeight: 21,
   },
 
-  // Activities List
-  grid: {
+  // Search Bar
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 48,
+    borderRadius: 14,
+    borderWidth: 1,
+    paddingHorizontal: 14,
+    marginBottom: 20,
     gap: 10,
+  },
+  searchIcon: {
+    fontSize: 16,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  clearBtn: {
+    padding: 4,
+  },
+  clearBtnText: {
+    fontSize: 14,
+    fontWeight: '700',
+  },
+
+  // 2-Cards-Per-Line Grid
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: 12,
     marginBottom: 32,
   },
   activityCard: {
+    width: '48%',
+    padding: 14,
+    borderRadius: 18,
+    borderWidth: 1.5,
+    justifyContent: 'space-between',
+    minHeight: 124,
+  },
+  cardTopRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: 16,
-    borderWidth: 1,
-    gap: 14,
+    justifyContent: 'space-between',
+    marginBottom: 12,
   },
   iconBox: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
+    width: 40,
+    height: 40,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
   },
   activityIcon: {
-    fontSize: 22,
-  },
-  activityInfo: {
-    flex: 1,
-  },
-  activityName: {
-    fontSize: 15,
-    fontWeight: '800',
-    letterSpacing: -0.2,
-    marginBottom: 2,
-  },
-  activityDesc: {
-    fontSize: 12.5,
-    lineHeight: 17,
+    fontSize: 20,
   },
   checkCircle: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
     borderWidth: 1.5,
     alignItems: 'center',
     justifyContent: 'center',
   },
   checkMark: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '900',
+  },
+  activityInfo: {
+    marginTop: 'auto',
+  },
+  activityName: {
+    fontSize: 15,
+    fontWeight: '800',
+    letterSpacing: -0.2,
+    marginBottom: 3,
+  },
+  activityDesc: {
+    fontSize: 11.5,
+    lineHeight: 15,
+  },
+
+  // Empty Search State
+  emptyBox: {
+    width: '100%',
+    paddingVertical: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 16,
+    borderWidth: 1,
+  },
+  emptyText: {
+    fontSize: 13,
+    fontWeight: '600',
   },
 
   // Submit Button

@@ -65,23 +65,16 @@ export function AuthScreen({
                 <Text style={[styles.logoText, { color: colors.textPrimary }]}>Mausam</Text>
               </View>
 
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                {onToggleTheme && (
-                  <Pressable
-                    onPress={onToggleTheme}
-                    style={[styles.stepPill, { backgroundColor: colors.card, borderColor: colors.border }]}
-                    hitSlop={8}
-                  >
-                    <Text style={{ fontSize: 13 }}>{theme === 'dark' ? '☀️ Light' : '🌙 Dark'}</Text>
-                  </Pressable>
-                )}
-
-                <View style={[styles.stepPill, { backgroundColor: colors.badgeBg, borderColor: colors.border }]}>
-                  <Text style={[styles.stepPillText, { color: colors.accent }]}>
-                    {currentStep === 1 ? '1. Philosophy' : '2. Profile'}
-                  </Text>
-                </View>
-              </View>
+              {/* Theme Toggle Only (No text, no philosophy bar) */}
+              {onToggleTheme && (
+                <Pressable
+                  onPress={onToggleTheme}
+                  style={[styles.themeToggleBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+                  hitSlop={8}
+                >
+                  <Text style={{ fontSize: 18 }}>{theme === 'dark' ? '☀️' : '🌙'}</Text>
+                </Pressable>
+              )}
             </View>
 
             {/* Minimalist Progress Track */}
@@ -111,7 +104,7 @@ export function AuthScreen({
                   Mausam calculates hyper-local satellite winds, swell, and UV telemetry to unlock prime performance hours for your outdoor passions.
                 </Text>
 
-                {/* Open Feature Highlights (Clean & breathable, no card wrappers) */}
+                {/* Open Feature Highlights */}
                 <View style={styles.featuresBlock}>
                   <View style={styles.featureItem}>
                     <View style={[styles.featureIconWrap, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -192,7 +185,7 @@ export function AuthScreen({
                     !policyAccepted && styles.primaryBtnDisabled,
                   ]}
                 >
-                  <Text style={styles.primaryBtnText}>Continue to Account Setup →</Text>
+                  <Text style={styles.primaryBtnText}>Proceed to Account Setup</Text>
                 </Pressable>
 
                 <Pressable
@@ -200,7 +193,7 @@ export function AuthScreen({
                   style={styles.guestBtn}
                 >
                   <Text style={[styles.guestBtnText, { color: colors.textMuted }]}>
-                    Skip for Now (Continue as Guest)
+                    Continue as Guest
                   </Text>
                 </Pressable>
               </View>
@@ -349,7 +342,7 @@ export function AuthScreen({
                   style={[styles.primaryBtn, { backgroundColor: colors.accent }]}
                 >
                   <Text style={styles.primaryBtnText}>
-                    {activeTab === 'signup' ? 'Continue to Sports Selection →' : 'Sign In & View Horizons →'}
+                    {activeTab === 'signup' ? 'Proceed to Activity Preferences' : 'Sign In'}
                   </Text>
                 </Pressable>
 
@@ -358,7 +351,7 @@ export function AuthScreen({
                   style={styles.guestBtn}
                 >
                   <Text style={[styles.guestBtnText, { color: colors.textMuted }]}>
-                    Skip for Now (Continue as Guest)
+                    Continue as Guest
                   </Text>
                 </Pressable>
               </View>

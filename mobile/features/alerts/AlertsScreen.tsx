@@ -181,6 +181,29 @@ export function AlertsScreen({
               <Text style={[styles.gaugeSub, { color: colors.textMuted }]}>12s period</Text>
             </View>
           </View>
+
+          {/* Particulate Composition Strip */}
+          <View style={[styles.slotRow, { backgroundColor: colors.cardSecondary, marginTop: 12, paddingVertical: 10 }]}>
+            <View style={styles.slotItem}>
+              <Text style={[styles.slotLabel, { color: colors.textMuted }]}>PM2.5</Text>
+              <Text style={[styles.slotMetric, { color: colors.textPrimary }]}>9.2 µg/m³</Text>
+            </View>
+            <View style={[styles.slotDivider, { backgroundColor: colors.border }]} />
+            <View style={styles.slotItem}>
+              <Text style={[styles.slotLabel, { color: colors.textMuted }]}>PM10</Text>
+              <Text style={[styles.slotMetric, { color: colors.textPrimary }]}>18.5 µg/m³</Text>
+            </View>
+            <View style={[styles.slotDivider, { backgroundColor: colors.border }]} />
+            <View style={styles.slotItem}>
+              <Text style={[styles.slotLabel, { color: colors.textMuted }]}>NO₂</Text>
+              <Text style={[styles.slotMetric, { color: colors.textPrimary }]}>14.0 µg/m³</Text>
+            </View>
+            <View style={[styles.slotDivider, { backgroundColor: colors.border }]} />
+            <View style={styles.slotItem}>
+              <Text style={[styles.slotLabel, { color: colors.textMuted }]}>O₃</Text>
+              <Text style={[styles.slotMetric, { color: colors.textPrimary }]}>48.0 µg/m³</Text>
+            </View>
+          </View>
         </View>
 
         <View style={{ height: 40 }} />
