@@ -65,6 +65,23 @@ export function AuthScreen({
                 <Text style={[styles.logoText, { color: colors.textPrimary }]}>Mausam</Text>
               </View>
 
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                {onToggleTheme && (
+                  <Pressable
+                    onPress={onToggleTheme}
+                    style={[styles.stepPill, { backgroundColor: colors.card, borderColor: colors.border }]}
+                    hitSlop={8}
+                  >
+                    <Text style={{ fontSize: 13 }}>{theme === 'dark' ? '☀️ Light' : '🌙 Dark'}</Text>
+                  </Pressable>
+                )}
+
+                <View style={[styles.stepPill, { backgroundColor: colors.badgeBg, borderColor: colors.border }]}>
+                  <Text style={[styles.stepPillText, { color: colors.accent }]}>
+                    {currentStep === 1 ? '1. Philosophy' : '2. Profile'}
+                  </Text>
+                </View>
+              </View>
               {onToggleTheme && (
                 <Pressable
                   onPress={onToggleTheme}
