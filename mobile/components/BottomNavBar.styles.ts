@@ -1,0 +1,148 @@
+import { StyleSheet } from 'react-native'
+
+export const styles = StyleSheet.create({
+  outerContainer: {
+    position: 'absolute',
+    bottom: 24,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+    zIndex: 100,
+  },
+  barContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#0E1424',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+    borderRadius: 36,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    width: '100%',
+    maxWidth: 300,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.5,
+    shadowRadius: 24,
+    elevation: 12,
+  },
+  tabButton: {
+    flex: 1,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  activeTab: {
+    backgroundColor: '#16223B',
+  },
+  iconWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+    height: 32,
+    width: 32,
+  },
+  activeDot: {
+    position: 'absolute',
+    bottom: -2,
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#38BDF8',
+  },
+  alertBadgeDot: {
+    position: 'absolute',
+    top: 2,
+    right: 2,
+    width: 7,
+    height: 7,
+    borderRadius: 3.5,
+    backgroundColor: '#EF4444',
+  },
+
+  // Bespoke Vector Glyphs
+  vectorIconBox: {
+    width: 24,
+    height: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  cloudPuff: {
+    position: 'absolute',
+    bottom: 4,
+    width: 18,
+    height: 9,
+    borderRadius: 4.5,
+    borderWidth: 1.8,
+    borderColor: '#64748B',
+    backgroundColor: 'transparent',
+  },
+  cloudPuffActive: {
+    borderColor: '#38BDF8',
+  },
+  sunDisc: {
+    position: 'absolute',
+    top: 3,
+    right: 3,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    borderWidth: 1.6,
+    borderColor: '#64748B',
+  },
+  sunDiscActive: {
+    borderColor: '#38BDF8',
+    backgroundColor: 'rgba(56, 189, 248, 0.3)',
+  },
+
+  bellBody: {
+    width: 12,
+    height: 12,
+    borderTopLeftRadius: 6,
+    borderTopRightRadius: 6,
+    borderWidth: 1.8,
+    borderColor: '#64748B',
+  },
+  bellBodyActive: {
+    borderColor: '#38BDF8',
+  },
+  bellRim: {
+    width: 16,
+    height: 2,
+    backgroundColor: '#64748B',
+    borderRadius: 1,
+    marginTop: -1,
+  },
+  bellRimActive: {
+    backgroundColor: '#38BDF8',
+  },
+
+  userHead: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    borderWidth: 1.8,
+    borderColor: '#64748B',
+    marginBottom: 2,
+  },
+  userHeadActive: {
+    borderColor: '#38BDF8',
+  },
+  userShoulders: {
+    width: 16,
+    height: 7,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+    borderWidth: 1.8,
+    borderColor: '#64748B',
+    borderBottomWidth: 0,
+  },
+  userShouldersActive: {
+    borderColor: '#38BDF8',
+  },
+})

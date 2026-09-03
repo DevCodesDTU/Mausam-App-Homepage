@@ -1,0 +1,15 @@
+{
+  "title": "🏄 Offshore Swell Peak Alert!",
+  "message": "Wind speed dropping to 12 km/h with 1.8m clean waves at 2:30 PM. Perfect 95% surf window open!",
+  "type": "activity_window",
+  "targetActivity": "surfing",
+  "data": {
+    "activity": "Surfing",
+    "score": 95,
+    "idealWindow": "2:30 PM - 5:15 PM",
+    "windSpeed": "12 km/h",
+    "waveHeight": "1.8m",
+    "actionUrl": "mausam://alerts"
+  }
+}
+
