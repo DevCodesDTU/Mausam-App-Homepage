@@ -6,6 +6,7 @@ import { HomeScreen } from './features/weather/HomeScreen'
 import { AlertsScreen } from './features/alerts/AlertsScreen'
 import { ProfileScreen } from './features/profile/ProfileScreen'
 import { BottomNavBar, TabScreen } from './components/BottomNavBar'
+import { ThemeMode, themes } from './lib/theme'
 import { styles } from './App.styles'
 
 type AppPhase = 'auth' | 'onboarding' | 'main'
@@ -13,58 +14,63 @@ type AppPhase = 'auth' | 'onboarding' | 'main'
 export default function App() {
   const [phase, setPhase] = useState<AppPhase>('auth')
   const [currentTab, setCurrentTab] = useState<TabScreen>('home')
+  const [theme, setTheme] = useState<ThemeMode>('dark')
   const [user, setUser] = useState<{ name: string; email: string }>({
     name: 'Alex River',
     email: 'alex.river@example.com',
   })
-  // Default selected activities including Surfing & Cycling from prompt
   const [userActivities, setUserActivities] = useState<string[]>([
     'surfing',
     'cycling',
   ])
   const [unit, setUnit] = useState<'C' | 'F'>('C')
 
-  // Auth Success Handler
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
+  }
+
   const handleAuthSuccess = (userData: { name: string; email: string }) => {
     setUser(userData)
     setPhase('onboarding')
   }
 
-  // Onboarding Complete Handler
   const handleOnboardingComplete = (selectedActivities: string[]) => {
     setUserActivities(selectedActivities)
     setPhase('main')
     setCurrentTab('home')
   }
 
-  // Toggle Temperature Unit
   const handleToggleUnit = () => {
     setUnit((prev) => (prev === 'C' ? 'F' : 'C'))
   }
 
-  // Sign out
   const handleSignOut = () => {
     setPhase('auth')
   }
 
-  return (
-    <View style={styles.appContainer}>
-      <StatusBar barStyle="light-content" backgroundColor="#8B5CF6" />
+  const colors = themes[theme]
 
-      {/* Decorative Ambient Glass Glowing Orbs */}
-      <View style={styles.ambientOrb1} />
-      <View style={styles.ambientOrb2} />
-      <View style={styles.ambientOrb3} />
+  return (
+    <View style={[styles.appContainer, { backgroundColor: colors.background }]}>
+      <StatusBar
+        barStyle={colors.statusBar}
+        backgroundColor={colors.background}
+      />
 
       {/* App Stage Machine */}
       {phase === 'auth' && (
-        <AuthScreen onSuccess={handleAuthSuccess} />
+        <AuthScreen
+          onSuccess={handleAuthSuccess}
+          theme={theme}
+          onToggleTheme={toggleTheme}
+        />
       )}
 
       {phase === 'onboarding' && (
         <OnboardingScreen
           userName={user.name}
           onComplete={handleOnboardingComplete}
+          theme={theme}
         />
       )}
 
@@ -75,6 +81,8 @@ export default function App() {
               userActivities={userActivities}
               unit={unit}
               onOpenProfile={() => setCurrentTab('profile')}
+              theme={theme}
+              onToggleTheme={toggleTheme}
             />
           )}
 
@@ -82,6 +90,7 @@ export default function App() {
             <AlertsScreen
               userActivities={userActivities}
               unit={unit}
+              theme={theme}
             />
           )}
 
@@ -95,14 +104,17 @@ export default function App() {
               onUpdateActivities={setUserActivities}
               onResetToOnboarding={() => setPhase('onboarding')}
               onSignOut={handleSignOut}
+              theme={theme}
+              onToggleTheme={toggleTheme}
             />
           )}
 
-          {/* Floating Icon-Only Bottom Bar on all main screens */}
+          {/* Floating Icon-Only Bottom Bar */}
           <BottomNavBar
             currentTab={currentTab}
             onSelectTab={setCurrentTab}
             hasAlerts={true}
+            theme={theme}
           />
         </View>
       )}

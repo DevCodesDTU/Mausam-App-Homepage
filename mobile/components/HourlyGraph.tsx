@@ -27,17 +27,18 @@ const DEFAULT_POINTS: HourlyPoint[] = [
 ]
 
 export function HourlyGraph({
-  points = DEFAULT_POINTS,
+  points,
   unit = 'C',
   onSelectTime,
 }: HourlyGraphProps) {
-  const [selectedIndex, setSelectedIndex] = useState<number>(3) // Default to 9:00 (matching design)
+  const safePoints = points && points.length > 0 ? points : DEFAULT_POINTS
+  const [selectedIndex, setSelectedIndex] = useState<number>(3)
 
   const formatTemp = (temp: number) => {
     return unit === 'F' ? `${Math.round((temp * 9) / 5 + 32)}°` : `${temp}°`
   }
 
-  const selectedPoint = points[selectedIndex] || points[0]
+  const selectedPoint = safePoints[selectedIndex] || safePoints[0]
 
   return (
     <View style={styles.container}>
@@ -47,15 +48,14 @@ export function HourlyGraph({
         
         {/* Connection points across timeline */}
         <View style={styles.dotsRow}>
-          {points.map((point, index) => {
+          {safePoints.map((point, index) => {
             const isSelected = index === selectedIndex
-            // Calculate a wave vertical offset based on index (simulating temperature curve)
             const offsets = [22, 28, 20, 8, 4, 10, 18, 26]
             const topOffset = offsets[index % offsets.length]
 
             return (
               <Pressable
-                key={point.time}
+                key={point.time + index}
                 onPress={() => {
                   setSelectedIndex(index)
                   if (onSelectTime) onSelectTime(point)
@@ -80,11 +80,11 @@ export function HourlyGraph({
 
       {/* Time Labels Row */}
       <View style={styles.timeLabelsRow}>
-        {points.map((point, index) => {
+        {safePoints.map((point, index) => {
           const isSelected = index === selectedIndex
           return (
             <Pressable
-              key={point.time}
+              key={point.time + index}
               onPress={() => {
                 setSelectedIndex(index)
                 if (onSelectTime) onSelectTime(point)

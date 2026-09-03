@@ -1,301 +1,485 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import {
   View,
   Text,
   ScrollView,
-  Pressable,
   SafeAreaView,
-  Modal,
+  Pressable,
+  RefreshControl,
 } from 'react-native'
-import { GlassCard } from '../../components/GlassCard'
-import { WeatherArt } from '../../components/WeatherArt'
-import { HourlyGraph, HourlyPoint } from '../../components/HourlyGraph'
-import { SevenDayForecast, DayForecastItem } from '../../components/SevenDayForecast'
-import { ActivitySuggestionCard } from '../../components/ActivitySuggestionCard'
+import { fetchLiveWeather, LiveWeatherResponse } from '../../lib/api/client'
 import {
-  getSmartActivitySuggestion,
-  WeatherConditionSummary,
-} from '../../lib/activity-engine'
+  AppLocation,
+  getCurrentGPSLocation,
+  NEW_DELHI_FALLBACK,
+} from '../../lib/services/location-service'
+import {
+  addNotificationListener,
+  AppNotification,
+  initializePushNotifications,
+  evaluateAndTriggerActivityNotifications,
+} from '../../lib/services/notification-service'
+import { MapLocationPicker } from '../../components/MapLocationPicker'
+import { AVAILABLE_ACTIVITIES } from '../../lib/activity-engine'
+import { ThemeMode, themes } from '../../lib/theme'
 import { styles } from './HomeScreen.styles'
 
 interface HomeScreenProps {
   userActivities: string[]
   unit: 'C' | 'F'
   onOpenProfile: () => void
+  theme?: ThemeMode
+  onToggleTheme?: () => void
 }
 
-interface LocationData {
-  id: string
-  name: string
-  region: string
-  country: string
-  temp: number
-  condition: string
-  iconType: 'cloudy-sun' | 'sun' | 'rain' | 'thunder' | 'wind' | 'moon'
-  precipitation: number
-  humidity: number
-  windSpeed: number
+function getHumanEditorialSummary(condition: string, temp: number, wind: number): string {
+  const c = condition.toLowerCase()
+  if (c.includes('rain') || c.includes('drizzle') || c.includes('shower')) {
+    return 'Passing precipitation over roads and coastlines. Damp tarmac; best to postpone high-speed road cycling.'
+  }
+  if (c.includes('snow') || c.includes('ice')) {
+    return 'Sub-zero mountain chill. Crisp powder coverage across slopes with elevated alpine wind chills.'
+  }
+  if (wind > 24) {
+    return 'Brisk westerly winds generating energetic coastal swell. High wind resistance for cyclists along exposed ridges.'
+  }
+  if (temp > 30) {
+    return 'High solar thermal intensity. Shade-seeking tempo runs advised; prime swimming and coastal conditions.'
+  }
+  if (c.includes('clear') || c.includes('sun')) {
+    return 'Clear sky and gentle breeze. Superb atmospheric clarity for evening runs, photography, and trail exploration.'
+  }
+  return 'Stable atmospheric window. Moderate breeze and mild temperature make this an ideal session slot.'
 }
 
-const LOCATIONS: LocationData[] = [
-  {
-    id: 'malibu',
-    name: 'Malibu Coast',
-    region: 'California',
-    country: 'USA',
-    temp: 22,
-    condition: 'Cloudy',
-    iconType: 'cloudy-sun',
-    precipitation: 30,
-    humidity: 20,
-    windSpeed: 12,
-  },
-  {
-    id: 'delhi',
-    name: 'New Delhi',
-    region: 'Delhi',
-    country: 'India',
-    temp: 29,
-    condition: 'Sunny',
-    iconType: 'sun',
-    precipitation: 5,
-    humidity: 45,
-    windSpeed: 14,
-  },
-  {
-    id: 'miami',
-    name: 'Miami Beach',
-    region: 'Florida',
-    country: 'USA',
-    temp: 27,
-    condition: 'Breezy & Sunny',
-    iconType: 'sun',
-    precipitation: 15,
-    humidity: 68,
-    windSpeed: 22,
-  },
-  {
-    id: 'honolulu',
-    name: 'Honolulu',
-    region: 'Hawaii',
-    country: 'USA',
-    temp: 26,
-    condition: 'Tropical Swell',
-    iconType: 'cloudy-sun',
-    precipitation: 20,
-    humidity: 55,
-    windSpeed: 18,
-  },
-  {
-    id: 'sydney',
-    name: 'Sydney Harbour',
-    region: 'NSW',
-    country: 'Australia',
-    temp: 21,
-    condition: 'Crisp Wind',
-    iconType: 'wind',
-    precipitation: 10,
-    humidity: 50,
-    windSpeed: 20,
-  },
-  {
-    id: 'london',
-    name: 'London',
-    region: 'Greater London',
-    country: 'UK',
-    temp: 16,
-    condition: 'Light Rain',
-    iconType: 'rain',
-    precipitation: 75,
-    humidity: 82,
-    windSpeed: 16,
-  },
-]
-
-export function HomeScreen({ userActivities, unit, onOpenProfile }: HomeScreenProps) {
-  const [selectedLocation, setSelectedLocation] = useState<LocationData>(LOCATIONS[0])
+export function HomeScreen({
+  userActivities,
+  unit,
+  theme = 'dark',
+  onToggleTheme,
+}: HomeScreenProps) {
+  const [currentLocation, setCurrentLocation] = useState<AppLocation>(NEW_DELHI_FALLBACK)
   const [showLocationModal, setShowLocationModal] = useState(false)
-  const [currentTemp, setCurrentTemp] = useState<number>(selectedLocation.temp)
-  const [currentCondition, setCurrentCondition] = useState<string>(selectedLocation.condition)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const [liveWeather, setLiveWeather] = useState<LiveWeatherResponse | null>(null)
+  const [selectedActivityId, setSelectedActivityId] = useState<string>(userActivities[0] || 'cycling')
+  const [selectedHourlyIndex, setSelectedHourlyIndex] = useState<number>(0)
+  const [activeNotification, setActiveNotification] = useState<AppNotification | null>(null)
+
+  const colors = themes[theme]
+
+  // 1. Initial Boot: Request Native GPS and Load Live Weather
+  const loadLocationAndWeather = useCallback(
+    async (customLoc?: AppLocation) => {
+      try {
+        let targetLoc = customLoc
+        if (!targetLoc) {
+          targetLoc = await getCurrentGPSLocation()
+          setCurrentLocation(targetLoc)
+        }
+
+        const weatherData = await fetchLiveWeather(
+          targetLoc.lat,
+          targetLoc.lon,
+          targetLoc.name,
+          targetLoc.region,
+          targetLoc.country
+        )
+
+        setLiveWeather(weatherData)
+
+        evaluateAndTriggerActivityNotifications(userActivities, {
+          temp: weatherData.current.temp,
+          precipitation: weatherData.current.precipitation,
+          windSpeed: weatherData.current.windSpeed,
+          humidity: weatherData.current.humidity,
+          uvIndex: weatherData.current.uvIndex,
+        })
+      } catch (err) {
+        console.warn('Error loading weather on boot:', err)
+      }
+    },
+    [userActivities]
+  )
+
+  useEffect(() => {
+    loadLocationAndWeather()
+    initializePushNotifications(userActivities)
+
+    const unsubscribeNotif = addNotificationListener((notif) => {
+      setActiveNotification(notif)
+    })
+
+    return () => {
+      unsubscribeNotif()
+    }
+  }, [loadLocationAndWeather, userActivities])
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true)
+    try {
+      await loadLocationAndWeather(currentLocation)
+    } finally {
+      setIsRefreshing(false)
+    }
+  }
+
+  const handleSelectLocation = (loc: AppLocation) => {
+    setCurrentLocation(loc)
+    loadLocationAndWeather(loc)
+  }
 
   const formatTemp = (temp: number) => {
     return unit === 'F' ? `${Math.round((temp * 9) / 5 + 32)}°` : `${temp}°`
   }
 
-  // Calculate dynamic activity suggestions using the separate JSON mapping
-  const weatherSummary: WeatherConditionSummary = {
-    temp: currentTemp,
-    condition: currentCondition,
-    precipitation: selectedLocation.precipitation,
-    windSpeed: selectedLocation.windSpeed,
-    humidity: selectedLocation.humidity,
-  }
+  const currentTemp = liveWeather?.current.temp ?? 24
+  const condition = liveWeather?.current.condition ?? 'Partly Cloudy'
+  const windSpeed = liveWeather?.current.windSpeed ?? 14
+  const uvIndex = liveWeather?.current.uvIndex ?? 4
+  const humidity = liveWeather?.current.humidity ?? 52
+  const precipitation = liveWeather?.current.precipitation ?? 10
+  const highTemp = liveWeather?.sevenDayForecast?.[0]?.highTemp ?? 28
+  const lowTemp = liveWeather?.sevenDayForecast?.[0]?.lowTemp ?? 18
+  const hourlyList = liveWeather?.hourlyPoints ?? []
+  const forecastList = liveWeather?.sevenDayForecast ?? []
 
-  const { primary, allSuggestions } = getSmartActivitySuggestion(
-    userActivities,
-    weatherSummary
+  const activeActivities = AVAILABLE_ACTIVITIES.filter((a) =>
+    userActivities.includes(a.id)
   )
-
-  const handleSelectLocation = (loc: LocationData) => {
-    setSelectedLocation(loc)
-    setCurrentTemp(loc.temp)
-    setCurrentCondition(loc.condition)
-    setShowLocationModal(false)
-  }
-
-  const handleSelectHourlyPoint = (point: HourlyPoint) => {
-    setCurrentTemp(point.temp)
-    setCurrentCondition(point.condition)
-  }
-
-  const handleSelectDay = (day: DayForecastItem) => {
-    setCurrentTemp(day.highTemp)
-    setCurrentCondition(day.condition)
-  }
+  const currentSport = activeActivities.find((a) => a.id === selectedActivityId) || activeActivities[0]
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={handleRefresh}
+            tintColor={colors.accent}
+            colors={[colors.accent]}
+          />
+        }
       >
-        <GlassCard style={styles.mainCard}>
-          {/* Header Bar — Matching Reference Layout */}
-          <View style={styles.headerBar}>
+        {/* Emergency Banner */}
+        {activeNotification && activeNotification.severity === 'emergency' && (
+          <View style={[styles.emergencyBanner, { backgroundColor: colors.dangerBg, borderColor: colors.dangerBorder }]}>
+            <View style={styles.emergencyIconBox}>
+              <Text style={styles.emergencyIcon}>🚨</Text>
+            </View>
+            <View style={styles.emergencyTextCol}>
+              <Text style={[styles.emergencyTitle, { color: colors.danger }]}>{activeNotification.title}</Text>
+              <Text style={[styles.emergencyDesc, { color: colors.textPrimary }]}>{activeNotification.message}</Text>
+            </View>
             <Pressable
-              onPress={() => setShowLocationModal(true)}
-              style={styles.menuIconBtn}
+              onPress={() => setActiveNotification(null)}
+              style={styles.emergencyClose}
               hitSlop={8}
             >
-              <View style={styles.dotsIconVertical}>
-                <View style={styles.miniMenuDot} />
-                <View style={styles.miniMenuDot} />
-                <View style={styles.miniMenuDot} />
-              </View>
+              <Text style={styles.emergencyCloseText}>✕</Text>
             </Pressable>
+          </View>
+        )}
 
-            {/* Location Title & Subtitle */}
+        {/* Standard In-App Notification Toast */}
+        {activeNotification && activeNotification.severity !== 'emergency' && (
+          <View style={[styles.notificationToast, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <Text style={styles.toastIcon}>
+              {activeNotification.severity === 'warning' ? '⚠️' : '🔔'}
+            </Text>
+            <View style={styles.toastTextCol}>
+              <Text style={[styles.toastTitle, { color: colors.textPrimary }]}>{activeNotification.title}</Text>
+              <Text style={[styles.toastDesc, { color: colors.textSecondary }]}>{activeNotification.message}</Text>
+            </View>
             <Pressable
-              onPress={() => setShowLocationModal(true)}
-              style={styles.locationTitleBox}
-            >
-              <View style={styles.locationRow}>
-                <Text style={styles.locationPinIcon}>📍</Text>
-                <Text style={styles.locationName}>{selectedLocation.name}</Text>
-              </View>
-              <Text style={styles.dateTimeText}>Monday, 1 January 9:00</Text>
-            </Pressable>
-
-            {/* Plus / Add Location Button */}
-            <Pressable
-              onPress={() => setShowLocationModal(true)}
-              style={styles.plusIconBtn}
+              onPress={() => setActiveNotification(null)}
+              style={styles.toastClose}
               hitSlop={8}
             >
-              <Text style={styles.plusText}>+</Text>
+              <Text style={styles.toastCloseText}>✕</Text>
             </Pressable>
           </View>
+        )}
 
-          {/* Hero Weather Section — Huge 22°, Cloudy & 3D Glass Artwork */}
-          <View style={styles.heroWeatherRow}>
-            <View style={styles.tempLeftCol}>
-              <Text style={styles.heroTempNumber}>{formatTemp(currentTemp)}</Text>
-              <Text style={styles.heroConditionText}>{currentCondition}</Text>
+        {/* Top Minimalist Header Bar with Theme Switcher */}
+        <View style={styles.topHeaderBar}>
+          <Pressable
+            onPress={() => setShowLocationModal(true)}
+            style={[styles.locationPill, { backgroundColor: colors.card, borderColor: colors.border }]}
+          >
+            <Text style={styles.locationPin}>📍</Text>
+            <Text style={[styles.locationName, { color: colors.textPrimary }]} numberOfLines={1}>
+              {currentLocation.name}
+            </Text>
+            {currentLocation.isGPS && <View style={styles.gpsPulseDot} />}
+          </Pressable>
+
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            {/* Quick Theme Toggle Button */}
+            {onToggleTheme && (
+              <Pressable
+                onPress={onToggleTheme}
+                style={[styles.placesBtn, { backgroundColor: colors.card, borderColor: colors.border, paddingHorizontal: 10 }]}
+                hitSlop={8}
+              >
+                <Text style={{ fontSize: 14 }}>{theme === 'dark' ? '☀️' : '🌙'}</Text>
+              </Pressable>
+            )}
+
+            <Pressable
+              onPress={() => setShowLocationModal(true)}
+              style={[styles.placesBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+            >
+              <Text style={styles.placesBtnIcon}>🗺️</Text>
+              <Text style={[styles.placesBtnText, { color: colors.textSecondary }]}>Explore</Text>
+            </Pressable>
+          </View>
+        </View>
+
+        {/* Atmospheric Hero Card */}
+        <View style={[styles.heroCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          {theme === 'dark' && <View style={styles.heroGlowAccent} />}
+
+          <View style={styles.heroTopRow}>
+            <View>
+              <Text style={[styles.heroTempNumber, { color: colors.textPrimary }]}>{formatTemp(currentTemp)}</Text>
+              <View style={styles.heroConditionRow}>
+                <Text style={[styles.heroConditionName, { color: colors.accent }]}>{condition}</Text>
+                <View style={[styles.heroRangePill, { backgroundColor: colors.cardSecondary }]}>
+                  <Text style={[styles.heroRangeText, { color: colors.textSecondary }]}>
+                    H: {formatTemp(highTemp)} • L: {formatTemp(lowTemp)}
+                  </Text>
+                </View>
+              </View>
             </View>
 
-            <View style={styles.heroArtRightCol}>
-              <WeatherArt type={selectedLocation.iconType} size="large" />
-            </View>
+            <Text style={styles.heroConditionGlyph}>
+              {condition.toLowerCase().includes('rain')
+                ? '🌧️'
+                : condition.toLowerCase().includes('clear') || condition.toLowerCase().includes('sun')
+                ? '☀️'
+                : condition.toLowerCase().includes('snow')
+                ? '❄️'
+                : '⛅'}
+            </Text>
           </View>
 
-          {/* 3-Metric Horizontal Stats Strip */}
-          <View style={styles.metricsStrip}>
-            {/* Precipitation */}
-            <View style={styles.metricItem}>
-              <Text style={styles.metricIcon}>☔</Text>
-              <Text style={styles.metricValue}>{selectedLocation.precipitation}%</Text>
-              <Text style={styles.metricLabel}>Precipitation</Text>
-            </View>
-
-            {/* Humidity */}
-            <View style={styles.metricItem}>
-              <Text style={styles.metricIcon}>💧</Text>
-              <Text style={styles.metricValue}>{selectedLocation.humidity}%</Text>
-              <Text style={styles.metricLabel}>Humidity</Text>
-            </View>
-
-            {/* Wind Speed */}
-            <View style={styles.metricItem}>
-              <Text style={styles.metricIcon}>💨</Text>
-              <Text style={styles.metricValue}>{selectedLocation.windSpeed} km/h</Text>
-              <Text style={styles.metricLabel}>Wind speed</Text>
-            </View>
+          {/* Human Editorial Sentiment */}
+          <View style={[styles.heroEditorialBox, { borderTopColor: colors.border }]}>
+            <Text style={[styles.heroEditorialText, { color: colors.textSecondary }]}>
+              {getHumanEditorialSummary(condition, currentTemp, windSpeed)}
+            </Text>
           </View>
+        </View>
 
-          {/* 24-Hour Forecast Curve Graph */}
-          <HourlyGraph
-            unit={unit}
-            onSelectTime={handleSelectHourlyPoint}
-          />
+        {/* 24-Hour Horizon Slider */}
+        <View style={styles.sectionTitleRow}>
+          <Text style={[styles.sectionTitle, { color: colors.textMuted }]}>24-Hour Horizon</Text>
+        </View>
 
-          {/* 7-Day Forecast Pills */}
-          <SevenDayForecast
-            unit={unit}
-            onSelectDay={handleSelectDay}
-          />
-        </GlassCard>
-
-        {/* Dynamic Activity Suggestion Card (Below Weather) */}
-        <ActivitySuggestionCard
-          primarySuggestion={primary}
-          allSuggestions={allSuggestions}
-          onOpenActivities={onOpenProfile}
-        />
-
-        {/* Bottom padding so floating nav bar does not overlap */}
-        <View style={styles.bottomSpacer} />
-      </ScrollView>
-
-      {/* Location Picker Modal */}
-      <Modal
-        visible={showLocationModal}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setShowLocationModal(false)}
-      >
-        <Pressable
-          style={styles.modalOverlay}
-          onPress={() => setShowLocationModal(false)}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.hourlyScroll}
         >
-          <View style={styles.modalCard}>
-            <Text style={styles.modalTitle}>Choose Location</Text>
-            <Text style={styles.modalSub}>Select a destination to update weather & activity insights:</Text>
+          {hourlyList.slice(0, 12).map((item, index) => {
+            const isActive = index === selectedHourlyIndex
+            return (
+              <Pressable
+                key={item.time + index}
+                onPress={() => setSelectedHourlyIndex(index)}
+                style={[
+                  styles.hourlyCard,
+                  { backgroundColor: colors.card, borderColor: colors.border },
+                  isActive && { backgroundColor: colors.cardSecondary, borderColor: colors.accent },
+                ]}
+              >
+                <Text style={[styles.hourlyTime, { color: colors.textMuted }, isActive && { color: colors.accent }]}>
+                  {item.time}
+                </Text>
+                <Text style={styles.hourlyIcon}>{item.icon || '🌤️'}</Text>
+                <Text style={[styles.hourlyTemp, { color: colors.textPrimary }]}>{formatTemp(item.temp)}</Text>
+                <View style={[styles.hourlyRainBar, { backgroundColor: colors.border }]}>
+                  <View
+                    style={[
+                      styles.hourlyRainFill,
+                      { width: `${Math.min(100, Math.max(10, index * 8))}%`, backgroundColor: colors.accent },
+                    ]}
+                  />
+                </View>
+              </Pressable>
+            )
+          })}
+        </ScrollView>
 
-            {LOCATIONS.map((loc) => {
-              const isCurrent = loc.id === selectedLocation.id
+        {/* Outdoor Passion Compass */}
+        <View style={styles.sectionTitleRow}>
+          <Text style={[styles.sectionTitle, { color: colors.textMuted }]}>Passion Radar & Windows</Text>
+        </View>
+
+        <View style={[styles.passionContainer, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.activityChipsRow}
+          >
+            {activeActivities.map((act) => {
+              const isSelected = act.id === (currentSport?.id || 'cycling')
               return (
                 <Pressable
-                  key={loc.id}
-                  onPress={() => handleSelectLocation(loc)}
+                  key={act.id}
+                  onPress={() => setSelectedActivityId(act.id)}
                   style={[
-                    styles.modalLocItem,
-                    isCurrent && styles.modalLocItemActive,
+                    styles.activityChip,
+                    { backgroundColor: colors.cardSecondary, borderColor: colors.border },
+                    isSelected && { borderColor: colors.accent, backgroundColor: colors.accentBg },
                   ]}
                 >
-                  <View style={styles.modalLocLeft}>
-                    <Text style={styles.modalLocPin}>📍</Text>
-                    <View>
-                      <Text style={styles.modalLocName}>{loc.name}</Text>
-                      <Text style={styles.modalLocRegion}>{loc.region}, {loc.country}</Text>
-                    </View>
-                  </View>
-                  <Text style={styles.modalLocTemp}>{formatTemp(loc.temp)}</Text>
+                  <Text style={styles.activityChipIcon}>{act.icon}</Text>
+                  <Text
+                    style={[
+                      styles.activityChipText,
+                      { color: colors.textSecondary },
+                      isSelected && { color: colors.accent, fontWeight: '800' },
+                    ]}
+                  >
+                    {act.name}
+                  </Text>
                 </Pressable>
               )
             })}
+          </ScrollView>
+
+          <View style={styles.passionGaugeRow}>
+            <View>
+              <Text style={[styles.passionVerdict, { color: colors.textPrimary }]}>
+                {currentSport?.name || 'Cycling'}: Peak Window
+              </Text>
+            </View>
+            <View style={[styles.passionScoreBadge, { backgroundColor: colors.successBg }]}>
+              <View style={styles.passionScoreDot} />
+              <Text style={[styles.passionScoreText, { color: colors.success }]}>94% Prime</Text>
+            </View>
           </View>
-        </Pressable>
-      </Modal>
+
+          <Text style={[styles.passionRationale, { color: colors.textSecondary }]}>
+            Clean wind flow at {windSpeed} km/h with dry surface grip. Prime daylight window open until 6:45 PM.
+          </Text>
+
+          <View style={[styles.passionWindowsStrip, { backgroundColor: colors.cardSecondary }]}>
+            <View style={[styles.passionWindowPill, { backgroundColor: colors.card }]}>
+              <Text style={[styles.passionWindowLabel, { color: colors.textMuted }]}>Morning Slot</Text>
+              <Text style={[styles.passionWindowTime, { color: colors.accent }]}>07:30 – 10:45 AM</Text>
+            </View>
+            <View style={[styles.passionWindowPill, { backgroundColor: colors.card }]}>
+              <Text style={[styles.passionWindowLabel, { color: colors.textMuted }]}>Evening Slot</Text>
+              <Text style={[styles.passionWindowTime, { color: colors.accent }]}>04:15 – 06:30 PM</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Bento Telemetry Grid */}
+        <View style={styles.sectionTitleRow}>
+          <Text style={[styles.sectionTitle, { color: colors.textMuted }]}>Atmospheric Telemetry</Text>
+        </View>
+
+        <View style={styles.bentoGrid}>
+          <View style={[styles.bentoTile, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <View style={styles.bentoHeader}>
+              <Text style={[styles.bentoLabel, { color: colors.textMuted }]}>Wind & Gusts</Text>
+              <Text style={styles.bentoIcon}>💨</Text>
+            </View>
+            <Text style={[styles.bentoValue, { color: colors.textPrimary }]}>{windSpeed} km/h</Text>
+            <Text style={[styles.bentoSub, { color: colors.textSecondary }]}>Offshore • Gusts 22 km/h</Text>
+          </View>
+
+          <View style={[styles.bentoTile, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <View style={styles.bentoHeader}>
+              <Text style={[styles.bentoLabel, { color: colors.textMuted }]}>UV Radiation</Text>
+              <Text style={styles.bentoIcon}>☀️</Text>
+            </View>
+            <Text style={[styles.bentoValue, { color: colors.textPrimary }]}>{uvIndex} Mod</Text>
+            <Text style={[styles.bentoSub, { color: colors.textSecondary }]}>SPF 30 recommended</Text>
+          </View>
+
+          <View style={[styles.bentoTile, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <View style={styles.bentoHeader}>
+              <Text style={[styles.bentoLabel, { color: colors.textMuted }]}>Humidity</Text>
+              <Text style={styles.bentoIcon}>💧</Text>
+            </View>
+            <Text style={[styles.bentoValue, { color: colors.textPrimary }]}>{humidity}%</Text>
+            <Text style={[styles.bentoSub, { color: colors.textSecondary }]}>Dew Point 16°C • Fresh</Text>
+          </View>
+
+          <View style={[styles.bentoTile, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <View style={styles.bentoHeader}>
+              <Text style={[styles.bentoLabel, { color: colors.textMuted }]}>Precipitation</Text>
+              <Text style={styles.bentoIcon}>🌧️</Text>
+            </View>
+            <Text style={[styles.bentoValue, { color: colors.textPrimary }]}>{precipitation}%</Text>
+            <Text style={[styles.bentoSub, { color: colors.textSecondary }]}>Zero rain next 90 min</Text>
+          </View>
+        </View>
+
+        {/* 7-Day Forecast Horizon */}
+        <View style={styles.sectionTitleRow}>
+          <Text style={[styles.sectionTitle, { color: colors.textMuted }]}>7-Day Horizon</Text>
+        </View>
+
+        <View style={[styles.sevenDayCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          {forecastList.slice(0, 7).map((day, idx) => {
+            const isLast = idx === forecastList.length - 1
+            return (
+              <View
+                key={day.day + idx}
+                style={[styles.dayRow, isLast && styles.dayRowLast, { borderBottomColor: colors.border }]}
+              >
+                <Text style={[styles.dayColName, { color: colors.textPrimary }]}>{day.day}</Text>
+                <Text style={styles.dayColIcon}>
+                  {day.condition.toLowerCase().includes('rain')
+                    ? '🌧️'
+                    : day.condition.toLowerCase().includes('clear') || day.condition.toLowerCase().includes('sun')
+                    ? '☀️'
+                    : day.condition.toLowerCase().includes('snow')
+                    ? '❄️'
+                    : '⛅'}
+                </Text>
+                <Text style={[styles.dayColCondition, { color: colors.textSecondary }]} numberOfLines={1}>
+                  {day.condition}
+                </Text>
+                <View style={styles.dayTempBarContainer}>
+                  <Text style={[styles.dayLowTemp, { color: colors.textMuted }]}>{formatTemp(day.lowTemp)}</Text>
+                  <View style={[styles.dayBarBg, { backgroundColor: colors.border }]}>
+                    <View
+                      style={[
+                        styles.dayBarFill,
+                        {
+                          width: `${Math.min(
+                            100,
+                            Math.max(20, ((day.highTemp - day.lowTemp) / 15) * 100)
+                          )}%`,
+                          backgroundColor: colors.accent,
+                        },
+                      ]}
+                    />
+                  </View>
+                  <Text style={[styles.dayHighTemp, { color: colors.textPrimary }]}>{formatTemp(day.highTemp)}</Text>
+                </View>
+              </View>
+            )
+          })}
+        </View>
+
+        <MapLocationPicker
+          visible={showLocationModal}
+          currentLocation={currentLocation}
+          onClose={() => setShowLocationModal(false)}
+          onSelectLocation={handleSelectLocation}
+          theme={theme}
+        />
+      </ScrollView>
     </SafeAreaView>
   )
 }

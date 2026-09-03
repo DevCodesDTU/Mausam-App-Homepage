@@ -6,18 +6,23 @@ import {
   Pressable,
   SafeAreaView,
 } from 'react-native'
-import { GlassCard } from '../../components/GlassCard'
 import { AVAILABLE_ACTIVITIES, Activity } from '../../lib/activity-engine'
+import { ThemeMode, themes } from '../../lib/theme'
 import { styles } from './OnboardingScreen.styles'
 
 interface OnboardingScreenProps {
   userName: string
   onComplete: (selectedActivityIds: string[]) => void
+  theme?: ThemeMode
 }
 
-export function OnboardingScreen({ userName, onComplete }: OnboardingScreenProps) {
-  // Pre-select Surfing and Cycling by default as requested in prompt!
+export function OnboardingScreen({
+  userName,
+  onComplete,
+  theme = 'dark',
+}: OnboardingScreenProps) {
   const [selectedIds, setSelectedIds] = useState<string[]>(['surfing', 'cycling'])
+  const colors = themes[theme]
 
   const toggleActivity = (id: string) => {
     setSelectedIds((prev) =>
@@ -31,22 +36,22 @@ export function OnboardingScreen({ userName, onComplete }: OnboardingScreenProps
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <GlassCard style={styles.card}>
+        <View style={styles.container}>
           {/* Header */}
           <View style={styles.header}>
-            <View style={styles.stepBadge}>
-              <Text style={styles.stepBadgeText}>Step 2 of 2 • Preferences</Text>
+            <View style={[styles.stepBadge, { backgroundColor: colors.badgeBg, borderColor: colors.border }]}>
+              <Text style={[styles.stepBadgeText, { color: colors.accent }]}>Passions & Sports</Text>
             </View>
-            <Text style={styles.title}>
-              What activities do you love, {userName.split(' ')[0]}?
+            <Text style={[styles.title, { color: colors.textPrimary }]}>
+              Choose Your Outdoor Activities
             </Text>
-            <Text style={styles.subtitle}>
-              Mausam uses live weather & wind conditions to suggest the best times for your favorite outdoor passions.
+            <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+              Mausam continuously evaluates wind, swell, UV, and temperatures to suggest peak performance windows.
             </Text>
           </View>
 
@@ -61,58 +66,48 @@ export function OnboardingScreen({ userName, onComplete }: OnboardingScreenProps
                   onPress={() => toggleActivity(activity.id)}
                   style={[
                     styles.activityCard,
-                    isSelected ? styles.cardSelected : styles.cardUnselected,
+                    { backgroundColor: colors.cardSecondary, borderColor: colors.border },
+                    isSelected && { borderColor: colors.accent, backgroundColor: colors.accentBg },
                   ]}
                 >
-                  <View style={styles.iconCircle}>
+                  <View style={[styles.iconBox, { backgroundColor: colors.card }]}>
                     <Text style={styles.activityIcon}>{activity.icon}</Text>
                   </View>
-                  <Text
+
+                  <View style={styles.activityInfo}>
+                    <Text style={[styles.activityName, { color: colors.textPrimary }]}>{activity.name}</Text>
+                    <Text style={[styles.activityDesc, { color: colors.textSecondary }]}>{activity.description}</Text>
+                  </View>
+
+                  <View
                     style={[
-                      styles.activityName,
-                      isSelected ? styles.textSelected : styles.textUnselected,
+                      styles.checkCircle,
+                      { borderColor: colors.border },
+                      isSelected && { backgroundColor: colors.accent, borderColor: colors.accent },
                     ]}
                   >
-                    {activity.name}
-                  </Text>
-                  <Text
-                    style={[
-                      styles.activityCategory,
-                      isSelected ? styles.categorySelected : styles.categoryUnselected,
-                    ]}
-                    numberOfLines={1}
-                  >
-                    {activity.category}
-                  </Text>
-                  {isSelected && (
-                    <View style={styles.checkBadge}>
-                      <Text style={styles.checkText}>✓</Text>
-                    </View>
-                  )}
+                    {isSelected && <Text style={[styles.checkMark, { color: colors.card }]}>✓</Text>}
+                  </View>
                 </Pressable>
               )
             })}
           </View>
 
-          {/* Selection counter & Continue Action */}
-          <View style={styles.footer}>
-            <Text style={styles.counterText}>
-              {selectedIds.length} {selectedIds.length === 1 ? 'activity' : 'activities'} selected
+          {/* Continue Action */}
+          <Pressable
+            onPress={handleContinue}
+            disabled={selectedIds.length === 0}
+            style={[
+              styles.submitBtn,
+              { backgroundColor: colors.accent },
+              selectedIds.length === 0 && styles.submitBtnDisabled,
+            ]}
+          >
+            <Text style={styles.submitBtnText}>
+              Launch Atmospheric Horizon ({selectedIds.length} chosen) →
             </Text>
-
-            <Pressable
-              onPress={handleContinue}
-              style={({ pressed }) => [
-                styles.continueBtn,
-                pressed && styles.btnPressed,
-              ]}
-            >
-              <Text style={styles.continueBtnText}>
-                See Weather & Suggestions →
-              </Text>
-            </Pressable>
-          </View>
-        </GlassCard>
+          </Pressable>
+        </View>
       </ScrollView>
     </SafeAreaView>
   )

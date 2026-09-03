@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState } from 'react'
 import {
   View,
   Text,
@@ -7,25 +7,26 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Animated,
-  Easing,
-  Modal,
+  SafeAreaView,
 } from 'react-native'
-import { WeatherArt } from '../../components/WeatherArt'
-import { GlassCard } from '../../components/GlassCard'
+import { ThemeMode, themes } from '../../lib/theme'
 import { styles } from './AuthScreen.styles'
 
 interface AuthScreenProps {
   onSuccess: (userData: { name: string; email: string }) => void
+  theme?: ThemeMode
+  onToggleTheme?: () => void
 }
 
-export function AuthScreen({ onSuccess }: AuthScreenProps) {
-  // Navigation step: 'welcome' (Step 1: Usage & Policy) | 'account' (Step 2: Form)
-  const [step, setStep] = useState<'welcome' | 'account'>('welcome')
+export function AuthScreen({
+  onSuccess,
+  theme = 'dark',
+  onToggleTheme,
+}: AuthScreenProps) {
+  const [currentStep, setCurrentStep] = useState<1 | 2>(1)
   const [policyAccepted, setPolicyAccepted] = useState(false)
-  const [showPolicyModal, setShowPolicyModal] = useState(false)
 
-  // Account Form State
+  // Form states
   const [activeTab, setActiveTab] = useState<'signup' | 'login'>('signup')
   const [name, setName] = useState('Alex River')
   const [email, setEmail] = useState('alex.river@example.com')
@@ -33,103 +34,10 @@ export function AuthScreen({ onSuccess }: AuthScreenProps) {
   const [showPassword, setShowPassword] = useState(false)
   const [focusedField, setFocusedField] = useState<string | null>(null)
 
-  // Animation References
-  const mountAnim = useRef(new Animated.Value(0)).current
-  const floatAnim = useRef(new Animated.Value(0)).current
-  const stepSlideAnim = useRef(new Animated.Value(0)).current
-  const tabAnim = useRef(new Animated.Value(0)).current // 0 = signup, 1 = login
-  const nameFieldAnim = useRef(new Animated.Value(1)).current
-  const btnScale = useRef(new Animated.Value(1)).current
+  const colors = themes[theme]
 
-  // Mount Animation
-  useEffect(() => {
-    Animated.spring(mountAnim, {
-      toValue: 1,
-      tension: 60,
-      friction: 9,
-      useNativeDriver: true,
-    }).start()
-  }, [])
-
-  // Floating Weather Art Animation
-  useEffect(() => {
-    const loop = Animated.loop(
-      Animated.sequence([
-        Animated.timing(floatAnim, {
-          toValue: -6,
-          duration: 2200,
-          easing: Easing.inOut(Easing.sin),
-          useNativeDriver: true,
-        }),
-        Animated.timing(floatAnim, {
-          toValue: 0,
-          duration: 2200,
-          easing: Easing.inOut(Easing.sin),
-          useNativeDriver: true,
-        }),
-      ])
-    )
-    loop.start()
-    return () => loop.stop()
-  }, [])
-
-  // Transition from Step 1 (Welcome) to Step 2 (Account)
-  const goToAccountStep = () => {
-    if (!policyAccepted) return
-    Animated.timing(stepSlideAnim, {
-      toValue: 1,
-      duration: 260,
-      easing: Easing.out(Easing.cubic),
-      useNativeDriver: true,
-    }).start(() => {
-      setStep('account')
-      stepSlideAnim.setValue(0)
-    })
-  }
-
-  const goBackToWelcome = () => {
-    setStep('welcome')
-  }
-
-  // Switch between Sign Up and Login tabs
-  const switchTab = (tab: 'signup' | 'login') => {
-    if (tab === activeTab) return
-    setActiveTab(tab)
-
-    Animated.parallel([
-      Animated.spring(tabAnim, {
-        toValue: tab === 'login' ? 1 : 0,
-        tension: 80,
-        friction: 10,
-        useNativeDriver: false,
-      }),
-      Animated.timing(nameFieldAnim, {
-        toValue: tab === 'signup' ? 1 : 0,
-        duration: 240,
-        easing: Easing.inOut(Easing.cubic),
-        useNativeDriver: false,
-      }),
-    ]).start()
-  }
-
-  // Button Press Springs
-  const handlePressIn = () => {
-    Animated.spring(btnScale, {
-      toValue: 0.96,
-      useNativeDriver: true,
-    }).start()
-  }
-
-  const handlePressOut = () => {
-    Animated.spring(btnScale, {
-      toValue: 1,
-      friction: 4,
-      useNativeDriver: true,
-    }).start()
-  }
-
-  const handleSubmit = () => {
-    const finalName = activeTab === 'signup' ? (name.trim() || 'Alex River') : 'Alex River'
+  const handleComplete = () => {
+    const finalName = activeTab === 'signup' ? name.trim() || 'Alex River' : 'Alex River'
     const finalEmail = email.trim() || 'alex.river@example.com'
     onSuccess({ name: finalName, email: finalEmail })
   }
@@ -138,225 +46,210 @@ export function AuthScreen({ onSuccess }: AuthScreenProps) {
     onSuccess({ name: 'Alex River', email: 'alex.river@example.com' })
   }
 
-  const tabLeftPosition = tabAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0%', '50%'],
-  })
-
-  const nameHeight = nameFieldAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 74],
-  })
-
-  const nameOpacity = nameFieldAnim.interpolate({
-    inputRange: [0, 0.4, 1],
-    outputRange: [0, 0, 1],
-  })
-
   return (
-    <KeyboardAvoidingView
-      style={styles.screenWrapper}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
+    <SafeAreaView style={[styles.screenWrapper, { backgroundColor: colors.background }]}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        <Animated.View
-          style={[
-            styles.cardContainer,
-            {
-              opacity: mountAnim,
-              transform: [
-                {
-                  scale: mountAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0.94, 1],
-                  }),
-                },
-                {
-                  translateY: mountAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [16, 0],
-                  }),
-                },
-              ],
-            },
-          ]}
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
-          <GlassCard style={styles.authGlassCard}>
-            {/* Top Shared Hero Art */}
-            <View style={styles.heroSection}>
-              <View style={styles.heroBadge}>
-                <Text style={styles.heroBadgeText}>✦ Live Atmospheric Insights</Text>
+          <View style={styles.container}>
+            {/* Top Minimalist Brand Header */}
+            <View style={styles.topBar}>
+              <View style={styles.logoBrandRow}>
+                <Text style={styles.logoGlyph}>🌤️</Text>
+                <Text style={[styles.logoText, { color: colors.textPrimary }]}>Mausam</Text>
               </View>
 
-              <Animated.View
-                style={[
-                  styles.artContainer,
-                  { transform: [{ translateY: floatAnim }] },
-                ]}
-              >
-                <WeatherArt type="cloudy-sun" size="medium" />
-              </Animated.View>
-
-              <Text style={styles.appName}>Mausam</Text>
-              <Text style={styles.appTagline}>
-                Personalized outdoor intelligence for your daily passions
-              </Text>
+              {onToggleTheme && (
+                <Pressable
+                  onPress={onToggleTheme}
+                  style={[styles.themeToggleBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+                  hitSlop={8}
+                >
+                  <Text style={{ fontSize: 16 }}>{theme === 'dark' ? '☀️' : '🌙'}</Text>
+                </Pressable>
+              )}
             </View>
 
-            {/* STEP 1: Instructions & Privacy Acceptance */}
-            {step === 'welcome' && (
-              <View style={{ width: '100%' }}>
-                {/* 3 Clear Human Usage Instructions */}
-                <View style={styles.instructionsContainer}>
-                  <View style={styles.instructionItem}>
-                    <View style={styles.instructionIconCircle}>
-                      <Text style={styles.instructionIcon}>🏄</Text>
+            {/* Minimalist Progress Track */}
+            <View style={styles.progressBarContainer}>
+              <View
+                style={[
+                  styles.progressBarTrack,
+                  { backgroundColor: colors.accent },
+                ]}
+              />
+              <View
+                style={[
+                  styles.progressBarTrack,
+                  { backgroundColor: currentStep === 2 ? colors.accent : colors.border },
+                ]}
+              />
+            </View>
+
+            {/* PAGE 1: DESCRIPTION, USAGE & PRIVACY */}
+            {currentStep === 1 && (
+              <View>
+                <Text style={[styles.kicker, { color: colors.accent }]}>Atmospheric Intelligence</Text>
+                <Text style={[styles.title, { color: colors.textPrimary }]}>
+                  Weather Tuned to Human Motion
+                </Text>
+                <Text style={[styles.description, { color: colors.textSecondary }]}>
+                  Mausam calculates hyper-local satellite winds, swell, and UV telemetry to unlock prime performance hours for your outdoor passions.
+                </Text>
+
+                {/* Open Feature Highlights (Clean & breathable, no card wrappers) */}
+                <View style={styles.featuresBlock}>
+                  <View style={styles.featureItem}>
+                    <View style={[styles.featureIconWrap, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                      <Text style={styles.featureIconText}>🏄</Text>
                     </View>
-                    <View style={styles.instructionTextCol}>
-                      <Text style={styles.instructionTitle}>Custom Passion Scoring</Text>
-                      <Text style={styles.instructionDesc}>
-                        Live conditions scored for surfing, cycling, running, and outdoor sports.
+                    <View style={styles.featureTextCol}>
+                      <Text style={[styles.featureHeading, { color: colors.textPrimary }]}>Outdoor Readiness Scoring</Text>
+                      <Text style={[styles.featureBody, { color: colors.textSecondary }]}>
+                        Calculates real-time condition scores for surfing, road cycling, running, and trail sports.
                       </Text>
                     </View>
                   </View>
 
-                  <View style={styles.instructionItem}>
-                    <View style={styles.instructionIconCircle}>
-                      <Text style={styles.instructionIcon}>⏱️</Text>
+                  <View style={styles.featureItem}>
+                    <View style={[styles.featureIconWrap, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                      <Text style={styles.featureIconText}>⏱️</Text>
                     </View>
-                    <View style={styles.instructionTextCol}>
-                      <Text style={styles.instructionTitle}>Optimal Time Windows</Text>
-                      <Text style={styles.instructionDesc}>
-                        Pinpoint the exact morning or afternoon hours with ideal wind & temperature.
+                    <View style={styles.featureTextCol}>
+                      <Text style={[styles.featureHeading, { color: colors.textPrimary }]}>Prime Time Slots</Text>
+                      <Text style={[styles.featureBody, { color: colors.textSecondary }]}>
+                        Highlights exact morning and evening windows when temperature and wind speeds align best.
                       </Text>
                     </View>
                   </View>
 
-                  <View style={styles.instructionItem}>
-                    <View style={styles.instructionIconCircle}>
-                      <Text style={styles.instructionIcon}>⚡</Text>
+                  <View style={styles.featureItem}>
+                    <View style={[styles.featureIconWrap, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                      <Text style={styles.featureIconText}>🚨</Text>
                     </View>
-                    <View style={styles.instructionTextCol}>
-                      <Text style={styles.instructionTitle}>Safety & UV Alerts</Text>
-                      <Text style={styles.instructionDesc}>
-                        Real-time alerts for gust peaks, rain showers, and sun protection advisories.
+                    <View style={styles.featureTextCol}>
+                      <Text style={[styles.featureHeading, { color: colors.textPrimary }]}>Emergency Radar</Text>
+                      <Text style={[styles.featureBody, { color: colors.textSecondary }]}>
+                        Instant heads-up notifications for coastal tsunami advisories, gales, and storm fronts.
                       </Text>
                     </View>
                   </View>
                 </View>
 
-                {/* Privacy & Terms Acceptance Checkbox */}
-                <Pressable
-                  onPress={() => setPolicyAccepted(!policyAccepted)}
-                  style={styles.policyCard}
-                >
-                  <View style={styles.policyRow}>
+                {/* Open Privacy & Terms of Usage Section */}
+                <View style={[styles.privacySection, { borderTopColor: colors.border }]}>
+                  <View style={styles.privacyTitleRow}>
+                    <Text style={{ fontSize: 16 }}>🔒</Text>
+                    <Text style={[styles.privacyTitle, { color: colors.textPrimary }]}>
+                      Data Privacy Commitment
+                    </Text>
+                  </View>
+
+                  <Text style={[styles.privacyText, { color: colors.textSecondary }]}>
+                    Satellite GPS coordinates are processed exclusively on your device to fetch live meteorological data. We never sell your location or track your profile.
+                  </Text>
+
+                  <Pressable
+                    onPress={() => setPolicyAccepted(!policyAccepted)}
+                    style={styles.consentRow}
+                  >
                     <View
                       style={[
-                        styles.checkboxSquare,
-                        policyAccepted && styles.checkboxSquareActive,
+                        styles.checkbox,
+                        { borderColor: colors.border, backgroundColor: colors.card },
+                        policyAccepted && { backgroundColor: colors.accent, borderColor: colors.accent },
                       ]}
                     >
-                      {policyAccepted && <Text style={styles.checkMarkText}>✓</Text>}
+                      {policyAccepted && <Text style={[styles.checkmark, { color: '#FFFFFF' }]}>✓</Text>}
                     </View>
-                    <View style={styles.policyTextCol}>
-                      <Text style={styles.policyText}>
-                        I agree to the{' '}
-                        <Text
-                          style={styles.policyLinkText}
-                          onPress={() => setShowPolicyModal(true)}
-                        >
-                          Privacy Policy
-                        </Text>{' '}
-                        and understand that Mausam uses real-time atmospheric data to optimize recommendations.
-                      </Text>
-                    </View>
-                  </View>
-                </Pressable>
-
-                {/* Continue CTA Button */}
-                <Animated.View style={{ transform: [{ scale: btnScale }] }}>
-                  <Pressable
-                    onPress={goToAccountStep}
-                    onPressIn={handlePressIn}
-                    onPressOut={handlePressOut}
-                    disabled={!policyAccepted}
-                    style={[
-                      styles.primaryCtaBtn,
-                      !policyAccepted && styles.primaryCtaBtnDisabled,
-                    ]}
-                  >
-                    <Text style={styles.primaryBtnText}>
-                      {policyAccepted ? 'Continue to Account →' : 'Accept Terms to Continue'}
+                    <Text style={[styles.consentLabel, { color: colors.textPrimary }]}>
+                      I agree to the Terms of Usage and Privacy Policy.
                     </Text>
                   </Pressable>
-                </Animated.View>
-
-                {/* Divider */}
-                <View style={styles.dividerContainer}>
-                  <View style={styles.dividerLine} />
-                  <Text style={styles.dividerText}>or</Text>
-                  <View style={styles.dividerLine} />
                 </View>
 
-                {/* Quick Instant Demo Access */}
+                {/* Continue Action */}
+                <Pressable
+                  onPress={() => setCurrentStep(2)}
+                  disabled={!policyAccepted}
+                  style={[
+                    styles.primaryBtn,
+                    { backgroundColor: colors.accent },
+                    !policyAccepted && styles.primaryBtnDisabled,
+                  ]}
+                >
+                  <Text style={styles.primaryBtnText}>Continue to Account Setup →</Text>
+                </Pressable>
+
                 <Pressable
                   onPress={handleInstantDemo}
                   style={styles.guestBtn}
                 >
-                  <Text style={styles.guestBtnIcon}>⚡</Text>
-                  <Text style={styles.guestBtnText}>Skip & Explore Instant Demo</Text>
+                  <Text style={[styles.guestBtnText, { color: colors.textMuted }]}>
+                    Skip for Now (Continue as Guest)
+                  </Text>
                 </Pressable>
               </View>
             )}
 
-            {/* STEP 2: Account Creation & Sign In */}
-            {step === 'account' && (
-              <View style={{ width: '100%' }}>
-                {/* Back to Step 1 Button */}
-                <View style={styles.step2Header}>
-                  <Pressable onPress={goBackToWelcome} style={styles.backBtn} hitSlop={8}>
-                    <Text style={styles.backBtnText}>← Back to Overview</Text>
-                  </Pressable>
-                </View>
+            {/* PAGE 2: CLEAN ACCOUNT CREATION */}
+            {currentStep === 2 && (
+              <View>
+                <Pressable
+                  onPress={() => setCurrentStep(1)}
+                  style={styles.backBtn}
+                  hitSlop={8}
+                >
+                  <Text style={[styles.backBtnText, { color: colors.accent }]}>← Back to Overview</Text>
+                </Pressable>
 
-                {/* Segmented Tab Switcher */}
-                <View style={styles.tabSwitcher}>
-                  <Animated.View
-                    style={[
-                      styles.activeIndicator,
-                      { left: tabLeftPosition },
-                    ]}
-                  />
+                <Text style={[styles.title, { color: colors.textPrimary }]}>
+                  {activeTab === 'signup' ? 'Create Your Account' : 'Welcome Back'}
+                </Text>
+                <Text style={[styles.description, { color: colors.textSecondary }]}>
+                  {activeTab === 'signup'
+                    ? 'Set up your profile to save custom spots and personalize activity windows.'
+                    : 'Sign in to access your saved spots and activity preferences.'}
+                </Text>
 
+                {/* Clean Tab Switcher */}
+                <View style={[styles.tabRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
                   <Pressable
-                    onPress={() => switchTab('signup')}
-                    style={styles.tabBtn}
-                    hitSlop={8}
+                    onPress={() => setActiveTab('signup')}
+                    style={[
+                      styles.tabBtn,
+                      activeTab === 'signup' && { backgroundColor: colors.accent },
+                    ]}
                   >
                     <Text
                       style={[
                         styles.tabBtnText,
-                        activeTab === 'signup' && styles.tabBtnTextActive,
+                        { color: colors.textMuted },
+                        activeTab === 'signup' && { color: '#FFFFFF', fontWeight: '800' },
                       ]}
                     >
-                      Create Account
+                      Sign Up
                     </Text>
                   </Pressable>
 
                   <Pressable
-                    onPress={() => switchTab('login')}
-                    style={styles.tabBtn}
-                    hitSlop={8}
+                    onPress={() => setActiveTab('login')}
+                    style={[
+                      styles.tabBtn,
+                      activeTab === 'login' && { backgroundColor: colors.accent },
+                    ]}
                   >
                     <Text
                       style={[
                         styles.tabBtnText,
-                        activeTab === 'login' && styles.tabBtnTextActive,
+                        { color: colors.textMuted },
+                        activeTab === 'login' && { color: '#FFFFFF', fontWeight: '800' },
                       ]}
                     >
                       Sign In
@@ -364,174 +257,107 @@ export function AuthScreen({ onSuccess }: AuthScreenProps) {
                   </Pressable>
                 </View>
 
-                {/* Form Section */}
-                <View style={styles.formSection}>
+                {/* Form Fields */}
+                <View style={styles.formFields}>
                   {activeTab === 'signup' && (
-                    <Animated.View
-                      style={[
-                        styles.animatedFieldWrapper,
-                        {
-                          height: nameHeight,
-                          opacity: nameOpacity,
-                        },
-                      ]}
-                    >
-                      <View style={styles.inputGroup}>
-                        <Text style={styles.inputLabel}>Full Name</Text>
-                        <View
-                          style={[
-                            styles.inputWrapper,
-                            focusedField === 'name' && styles.inputWrapperFocused,
-                          ]}
-                        >
-                          <Text style={styles.inputIcon}>👤</Text>
-                          <TextInput
-                            style={styles.textInput}
-                            placeholder="Your full name"
-                            placeholderTextColor="#9CA3AF"
-                            value={name}
-                            onChangeText={setName}
-                            onFocus={() => setFocusedField('name')}
-                            onBlur={() => setFocusedField(null)}
-                            autoCapitalize="words"
-                          />
-                        </View>
-                      </View>
-                    </Animated.View>
-                  )}
-
-                  {/* Email Field */}
-                  <View style={styles.inputGroup}>
-                    <Text style={styles.inputLabel}>Email Address</Text>
-                    <View
-                      style={[
-                        styles.inputWrapper,
-                        focusedField === 'email' && styles.inputWrapperFocused,
-                      ]}
-                    >
-                      <Text style={styles.inputIcon}>✉️</Text>
+                    <View style={styles.fieldGroup}>
+                      <Text style={[styles.fieldLabel, { color: colors.textMuted }]}>Full Name</Text>
                       <TextInput
-                        style={styles.textInput}
-                        placeholder="name@example.com"
-                        placeholderTextColor="#9CA3AF"
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                        value={email}
-                        onChangeText={setEmail}
-                        onFocus={() => setFocusedField('email')}
+                        style={[
+                          styles.input,
+                          {
+                            backgroundColor: colors.card,
+                            borderColor: focusedField === 'name' ? colors.accent : colors.border,
+                            color: colors.textPrimary,
+                          },
+                        ]}
+                        value={name}
+                        onChangeText={setName}
+                        placeholder="Alex River"
+                        placeholderTextColor={colors.textMuted}
+                        onFocus={() => setFocusedField('name')}
                         onBlur={() => setFocusedField(null)}
                       />
                     </View>
+                  )}
+
+                  <View style={styles.fieldGroup}>
+                    <Text style={[styles.fieldLabel, { color: colors.textMuted }]}>Email</Text>
+                    <TextInput
+                      style={[
+                        styles.input,
+                        {
+                          backgroundColor: colors.card,
+                          borderColor: focusedField === 'email' ? colors.accent : colors.border,
+                          color: colors.textPrimary,
+                        },
+                      ]}
+                      value={email}
+                      onChangeText={setEmail}
+                      placeholder="alex.river@example.com"
+                      placeholderTextColor={colors.textMuted}
+                      autoCapitalize="none"
+                      keyboardType="email-address"
+                      onFocus={() => setFocusedField('email')}
+                      onBlur={() => setFocusedField(null)}
+                    />
                   </View>
 
-                  {/* Password Field */}
-                  <View style={styles.inputGroup}>
-                    <Text style={styles.inputLabel}>Password</Text>
-                    <View
-                      style={[
-                        styles.inputWrapper,
-                        focusedField === 'password' && styles.inputWrapperFocused,
-                      ]}
-                    >
-                      <Text style={styles.inputIcon}>🔒</Text>
+                  <View style={styles.fieldGroup}>
+                    <Text style={[styles.fieldLabel, { color: colors.textMuted }]}>Password</Text>
+                    <View style={styles.passwordInputRow}>
                       <TextInput
-                        style={styles.textInput}
-                        placeholder="Enter password"
-                        placeholderTextColor="#9CA3AF"
-                        secureTextEntry={!showPassword}
+                        style={[
+                          styles.input,
+                          {
+                            backgroundColor: colors.card,
+                            borderColor: focusedField === 'password' ? colors.accent : colors.border,
+                            color: colors.textPrimary,
+                            paddingRight: 48,
+                          },
+                        ]}
                         value={password}
                         onChangeText={setPassword}
+                        placeholder="••••••••••••"
+                        placeholderTextColor={colors.textMuted}
+                        secureTextEntry={!showPassword}
                         onFocus={() => setFocusedField('password')}
                         onBlur={() => setFocusedField(null)}
                       />
                       <Pressable
                         onPress={() => setShowPassword(!showPassword)}
-                        style={styles.visibilityToggle}
+                        style={styles.passwordEye}
                         hitSlop={8}
                       >
-                        <Text style={styles.visibilityText}>
-                          {showPassword ? '👁️' : '👁️‍🗨️'}
-                        </Text>
+                        <Text style={{ fontSize: 16 }}>{showPassword ? '👁️' : '🔒'}</Text>
                       </Pressable>
                     </View>
                   </View>
-
-                  {activeTab === 'login' && (
-                    <View style={styles.forgotPasswordRow}>
-                      <Pressable hitSlop={6}>
-                        <Text style={styles.forgotPasswordText}>
-                          Forgot Password?
-                        </Text>
-                      </Pressable>
-                    </View>
-                  )}
-
-                  {/* CTA Submit Button */}
-                  <Animated.View style={{ transform: [{ scale: btnScale }] }}>
-                    <Pressable
-                      onPress={handleSubmit}
-                      onPressIn={handlePressIn}
-                      onPressOut={handlePressOut}
-                      style={styles.primaryCtaBtn}
-                    >
-                      <Text style={styles.primaryBtnText}>
-                        {activeTab === 'signup' ? 'Complete Registration →' : 'Sign In →'}
-                      </Text>
-                    </Pressable>
-                  </Animated.View>
                 </View>
+
+                {/* Submit Action */}
+                <Pressable
+                  onPress={handleComplete}
+                  style={[styles.primaryBtn, { backgroundColor: colors.accent }]}
+                >
+                  <Text style={styles.primaryBtnText}>
+                    {activeTab === 'signup' ? 'Continue to Sports Selection →' : 'Sign In & View Horizons →'}
+                  </Text>
+                </Pressable>
+
+                <Pressable
+                  onPress={handleInstantDemo}
+                  style={styles.guestBtn}
+                >
+                  <Text style={[styles.guestBtnText, { color: colors.textMuted }]}>
+                    Skip for Now (Continue as Guest)
+                  </Text>
+                </Pressable>
               </View>
             )}
-          </GlassCard>
-        </Animated.View>
-      </ScrollView>
-
-      {/* Privacy Policy & Terms Modal */}
-      <Modal
-        visible={showPolicyModal}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setShowPolicyModal(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalCard}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Privacy & Data Policy</Text>
-              <Pressable
-                onPress={() => setShowPolicyModal(false)}
-                style={styles.modalCloseBtn}
-                hitSlop={8}
-              >
-                <Text style={styles.modalCloseText}>✕</Text>
-              </Pressable>
-            </View>
-
-            <ScrollView style={styles.modalScroll} showsVerticalScrollIndicator={false}>
-              <Text style={styles.modalSectionTitle}>1. Atmospheric Intelligence</Text>
-              <Text style={styles.modalBodyText}>
-                Mausam calculates activity match scores, wind safety metrics, and optimal hourly windows using real-time atmospheric data.
-              </Text>
-
-              <Text style={styles.modalSectionTitle}>2. Location Privacy</Text>
-              <Text style={styles.modalBodyText}>
-                Your device location is used solely to query local weather forecasts. We never sell, track, or share your movement history.
-              </Text>
-
-              <Text style={styles.modalSectionTitle}>3. Account Security</Text>
-              <Text style={styles.modalBodyText}>
-                Your credentials and activity preferences are securely stored and encrypted. You can modify or remove your profile at any time.
-              </Text>
-            </ScrollView>
-
-            <Pressable
-              onPress={() => setShowPolicyModal(false)}
-              style={styles.modalCloseActionBtn}
-            >
-              <Text style={styles.modalCloseActionText}>Understood</Text>
-            </Pressable>
           </View>
-        </View>
-      </Modal>
-    </KeyboardAvoidingView>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   )
 }
