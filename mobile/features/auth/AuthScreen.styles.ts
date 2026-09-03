@@ -42,14 +42,6 @@ export const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
   },
-  themeToggleBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-  },
   stepPillText: {
     fontSize: 11,
     fontWeight: '700',

@@ -82,15 +82,6 @@ export function AuthScreen({
                   </Text>
                 </View>
               </View>
-              {onToggleTheme && (
-                <Pressable
-                  onPress={onToggleTheme}
-                  style={[styles.themeToggleBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
-                  hitSlop={8}
-                >
-                  <Text style={{ fontSize: 16 }}>{theme === 'dark' ? '☀️' : '🌙'}</Text>
-                </Pressable>
-              )}
             </View>
 
             {/* Minimalist Progress Track */}
