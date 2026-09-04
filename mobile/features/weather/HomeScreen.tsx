@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   Pressable,
   RefreshControl,
+  Animated,
 } from 'react-native'
 import { fetchLiveWeather, LiveWeatherResponse } from '../../lib/api/client'
 import {
@@ -66,6 +67,9 @@ export function HomeScreen({
   const [selectedHourlyIndex, setSelectedHourlyIndex] = useState<number>(0)
   const [activeNotification, setActiveNotification] = useState<AppNotification | null>(null)
 
+  const homeFadeAnim = useRef(new Animated.Value(0)).current
+  const homeSlideAnim = useRef(new Animated.Value(14)).current
+
   const colors = themes[theme]
 
   // 1. Initial Boot: Request Native GPS and Load Live Weather
@@ -103,6 +107,19 @@ export function HomeScreen({
   )
 
   useEffect(() => {
+    Animated.parallel([
+      Animated.timing(homeFadeAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+      Animated.timing(homeSlideAnim, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+    ]).start()
+
     loadLocationAndWeather()
     initializePushNotifications(userActivities)
 
@@ -163,6 +180,7 @@ export function HomeScreen({
           />
         }
       >
+        <Animated.View style={{ opacity: homeFadeAnim, transform: [{ translateY: homeSlideAnim }] }}>
         {/* Emergency Banner */}
         {activeNotification && activeNotification.severity === 'emergency' && (
           <View style={[styles.emergencyBanner, { backgroundColor: colors.dangerBg, borderColor: colors.dangerBorder }]}>
@@ -479,6 +497,7 @@ export function HomeScreen({
           onSelectLocation={handleSelectLocation}
           theme={theme}
         />
+        </Animated.View>
       </ScrollView>
     </SafeAreaView>
   )

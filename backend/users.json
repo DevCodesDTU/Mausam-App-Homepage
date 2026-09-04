@@ -1,0 +1,82 @@
+[
+  {
+    "id": "usr_alex_river_01",
+    "name": "Alex River",
+    "email": "alex.river@example.com",
+    "password": "password123",
+    "role": "athlete",
+    "favoriteSports": [
+      "surfing",
+      "cycling"
+    ],
+    "createdAt": "2026-09-01T10:00:00.000Z"
+  },
+  {
+    "id": "usr_elena_rostova_02",
+    "name": "Elena Rostova",
+    "email": "elena.cyclist@mausam.app",
+    "password": "velo2026!",
+    "role": "cyclist",
+    "favoriteSports": [
+      "cycling",
+      "running"
+    ],
+    "createdAt": "2026-09-01T14:30:00.000Z"
+  },
+  {
+    "id": "usr_kai_tanaka_03",
+    "name": "Kai Tanaka",
+    "email": "kai.surf@ocean.io",
+    "password": "swellrider88",
+    "role": "surfer",
+    "favoriteSports": [
+      "surfing",
+      "sailing"
+    ],
+    "createdAt": "2026-09-02T08:15:00.000Z"
+  },
+  {
+    "id": "usr_maya_sharma_04",
+    "name": "Maya Sharma",
+    "email": "maya.trail@himalaya.org",
+    "password": "trekker#2026",
+    "role": "mountaineer",
+    "favoriteSports": [
+      "hiking",
+      "photography"
+    ],
+    "createdAt": "2026-09-02T16:45:00.000Z"
+  },
+  {
+    "id": "usr_david_miller_05",
+    "name": "David Miller",
+    "email": "david.runner@pace.com",
+    "password": "marathon42k",
+    "role": "runner",
+    "favoriteSports": [
+      "running",
+      "cycling"
+    ],
+    "createdAt": "2026-09-03T07:20:00.000Z"
+  },
+  {
+    "id": "usr_demo_user_06",
+    "name": "Mausam Explorer",
+    "email": "demo@mausam.app",
+    "password": "mausam2026",
+    "role": "general",
+    "favoriteSports": [
+      "cycling",
+      "hiking",
+      "surfing"
+    ],
+    "createdAt": "2026-09-03T12:00:00.000Z"
+  },
+  {
+    "id": "usr_mtmefsp0_394p",
+    "name": "Alex Rive",
+    "email": "alex.river@example.co",
+    "password": "password123",
+    "createdAt": "2026-09-04T03:33:25.380Z"
+  }
+]

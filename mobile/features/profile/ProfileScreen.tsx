@@ -11,39 +11,40 @@ import { ThemeMode, themes } from '../../lib/theme'
 import { styles } from './ProfileScreen.styles'
 
 interface ProfileScreenProps {
-  userName: string
-  userEmail: string
-  userActivities: string[]
-  unit: 'C' | 'F'
-  onToggleUnit: () => void
-  onUpdateActivities: (activities: string[]) => void
-  onResetToOnboarding: () => void
-  onSignOut: () => void
+  userName?: string
+  userEmail?: string
+  userActivities?: string[]
+  unit?: 'C' | 'F'
+  onToggleUnit?: () => void
+  onUpdateActivities?: (activities: string[]) => void
+  onResetToOnboarding?: () => void
+  onSignOut?: () => void
   theme?: ThemeMode
   onToggleTheme?: () => void
 }
 
 export function ProfileScreen({
-  userName,
-  userEmail,
-  userActivities,
-  unit,
-  onToggleUnit,
-  onUpdateActivities,
-  onResetToOnboarding,
-  onSignOut,
+  userName = 'Explorer',
+  userEmail = 'user@example.com',
+  userActivities = [],
+  unit = 'C',
+  onToggleUnit = () => {},
+  onUpdateActivities = () => {},
+  onResetToOnboarding = () => {},
+  onSignOut = () => {},
   theme = 'dark',
   onToggleTheme,
 }: ProfileScreenProps) {
   const colors = themes[theme]
 
   const toggleActivity = (id: string) => {
-    if (userActivities.includes(id)) {
-      if (userActivities.length > 1) {
-        onUpdateActivities(userActivities.filter((item) => item !== id))
+    const currentList = userActivities || []
+    if (currentList.includes(id)) {
+      if (currentList.length > 1) {
+        onUpdateActivities(currentList.filter((item) => item !== id))
       }
     } else {
-      onUpdateActivities([...userActivities, id])
+      onUpdateActivities([...currentList, id])
     }
   }
 
@@ -58,7 +59,7 @@ export function ProfileScreen({
           <View style={styles.profileHeader}>
             <View style={[styles.avatarCircle, { borderColor: colors.accent, backgroundColor: colors.cardSecondary }]}>
               <Text style={[styles.avatarLetter, { color: colors.accent }]}>
-                {userName.charAt(0).toUpperCase()}
+                {(userName?.charAt(0) || 'M').toUpperCase()}
               </Text>
             </View>
             <Text style={[styles.profileName, { color: colors.textPrimary }]}>{userName}</Text>
@@ -149,7 +150,7 @@ export function ProfileScreen({
           <Text style={[styles.sectionHeader, { color: colors.textMuted }]}>Active Passions & Sports</Text>
           <View style={styles.activitiesGrid}>
             {AVAILABLE_ACTIVITIES.map((act) => {
-              const isActive = userActivities.includes(act.id)
+              const isActive = (userActivities || []).includes(act.id)
               return (
                 <Pressable
                   key={act.id}

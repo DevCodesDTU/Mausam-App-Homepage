@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { View, StatusBar } from 'react-native'
+import { SplashScreen } from './features/splash/SplashScreen'
 import { AuthScreen } from './features/auth/AuthScreen'
 import { OnboardingScreen } from './features/onboarding/OnboardingScreen'
 import { HomeScreen } from './features/weather/HomeScreen'
@@ -9,10 +10,10 @@ import { BottomNavBar, TabScreen } from './components/BottomNavBar'
 import { ThemeMode, themes } from './lib/theme'
 import { styles } from './App.styles'
 
-type AppPhase = 'auth' | 'onboarding' | 'main'
+type AppPhase = 'splash' | 'auth' | 'onboarding' | 'main'
 
 export default function App() {
-  const [phase, setPhase] = useState<AppPhase>('auth')
+  const [phase, setPhase] = useState<AppPhase>('splash')
   const [currentTab, setCurrentTab] = useState<TabScreen>('home')
   const [theme, setTheme] = useState<ThemeMode>('dark')
   const [user, setUser] = useState<{ name: string; email: string }>({
@@ -57,7 +58,15 @@ export default function App() {
         backgroundColor={colors.background}
       />
 
-      {/* App Stage Machine */}
+      {/* 1. Animated Splash / App Load Screen */}
+      {phase === 'splash' && (
+        <SplashScreen
+          onFinish={() => setPhase('auth')}
+          theme={theme}
+        />
+      )}
+
+      {/* 2. Zero-Scroll 3-Page Auth Screen */}
       {phase === 'auth' && (
         <AuthScreen
           onSuccess={handleAuthSuccess}
@@ -66,6 +75,7 @@ export default function App() {
         />
       )}
 
+      {/* 3. Onboarding Screen */}
       {phase === 'onboarding' && (
         <OnboardingScreen
           userName={user.name}
@@ -74,6 +84,7 @@ export default function App() {
         />
       )}
 
+      {/* 4. Main Application Experience */}
       {phase === 'main' && (
         <View style={styles.mainContainer}>
           {currentTab === 'home' && (
@@ -109,11 +120,9 @@ export default function App() {
             />
           )}
 
-          {/* Floating Icon-Only Bottom Bar */}
           <BottomNavBar
             currentTab={currentTab}
             onSelectTab={setCurrentTab}
-            hasAlerts={true}
             theme={theme}
           />
         </View>
