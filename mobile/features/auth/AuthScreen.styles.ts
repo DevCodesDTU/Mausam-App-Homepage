@@ -36,6 +36,14 @@ export const styles = StyleSheet.create({
     fontWeight: '900',
     letterSpacing: -0.5,
   },
+  themeToggleBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   stepPill: {
     paddingHorizontal: 12,
     paddingVertical: 5,

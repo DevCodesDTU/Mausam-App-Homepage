@@ -78,6 +78,59 @@ export async function api<T>(
   return response.json();
 }
 
+export interface AuthUser {
+  id: string;
+  name: string;
+  email: string;
+}
+
+export interface AuthResponse {
+  success: boolean;
+  message?: string;
+  user?: AuthUser;
+  error?: string;
+}
+
+// 1. Register new account in backend users.json
+export async function registerUser(name: string, email: string, password: string): Promise<AuthResponse> {
+  const url = `${env.API_URL}/api/auth/register`;
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password }),
+    });
+    const data = await res.json();
+    return data;
+  } catch (err: any) {
+    console.warn("Backend registration network error:", err);
+    return {
+      success: false,
+      error: "Unable to connect to backend server. Please verify the backend is running.",
+    };
+  }
+}
+
+// 2. Authenticate existing user credentials against backend users.json
+export async function loginUser(email: string, password: string): Promise<AuthResponse> {
+  const url = `${env.API_URL}/api/auth/login`;
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await res.json();
+    return data;
+  } catch (err: any) {
+    console.warn("Backend login network error:", err);
+    return {
+      success: false,
+      error: "Unable to connect to backend server. Please verify the backend is running.",
+    };
+  }
+}
+
 // 1. Fetch Real-Time Weather from Backend (or fallback direct Open-Meteo)
 export async function fetchLiveWeather(
   lat: number,

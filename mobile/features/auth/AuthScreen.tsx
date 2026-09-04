@@ -8,7 +8,9 @@ import {
   Platform,
   ScrollView,
   SafeAreaView,
+  ActivityIndicator,
 } from 'react-native'
+import { registerUser, loginUser } from '../../lib/api/client'
 import { ThemeMode, themes } from '../../lib/theme'
 import { styles } from './AuthScreen.styles'
 
@@ -33,13 +35,53 @@ export function AuthScreen({
   const [password, setPassword] = useState('password123')
   const [showPassword, setShowPassword] = useState(false)
   const [focusedField, setFocusedField] = useState<string | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const colors = themes[theme]
 
-  const handleComplete = () => {
-    const finalName = activeTab === 'signup' ? name.trim() || 'Alex River' : 'Alex River'
-    const finalEmail = email.trim() || 'alex.river@example.com'
-    onSuccess({ name: finalName, email: finalEmail })
+  const handleTabChange = (tab: 'signup' | 'login') => {
+    setActiveTab(tab)
+    setErrorMessage(null)
+  }
+
+  const handleComplete = async () => {
+    setErrorMessage(null)
+    const finalEmail = email.trim()
+    const finalPassword = password
+
+    if (!finalEmail) {
+      setErrorMessage('Please enter an email address.')
+      return
+    }
+    if (!finalPassword) {
+      setErrorMessage('Please enter your password.')
+      return
+    }
+
+    setIsSubmitting(true)
+    try {
+      if (activeTab === 'signup') {
+        const finalName = name.trim() || 'Alex River'
+        const res = await registerUser(finalName, finalEmail, finalPassword)
+        if (res.success && res.user) {
+          onSuccess({ name: res.user.name, email: res.user.email })
+        } else {
+          setErrorMessage(res.error || 'Unable to create account. Please try again.')
+        }
+      } else {
+        const res = await loginUser(finalEmail, finalPassword)
+        if (res.success && res.user) {
+          onSuccess({ name: res.user.name, email: res.user.email })
+        } else {
+          setErrorMessage(res.error || 'Invalid credentials. Please verify your email and password.')
+        }
+      }
+    } catch (err: any) {
+      setErrorMessage('Network connection error. Please ensure backend server is running.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleInstantDemo = () => {
@@ -222,7 +264,7 @@ export function AuthScreen({
                 {/* Clean Tab Switcher */}
                 <View style={[styles.tabRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
                   <Pressable
-                    onPress={() => setActiveTab('signup')}
+                    onPress={() => handleTabChange('signup')}
                     style={[
                       styles.tabBtn,
                       activeTab === 'signup' && { backgroundColor: colors.accent },
@@ -240,7 +282,7 @@ export function AuthScreen({
                   </Pressable>
 
                   <Pressable
-                    onPress={() => setActiveTab('login')}
+                    onPress={() => handleTabChange('login')}
                     style={[
                       styles.tabBtn,
                       activeTab === 'login' && { backgroundColor: colors.accent },
@@ -258,6 +300,29 @@ export function AuthScreen({
                   </Pressable>
                 </View>
 
+                {/* Backend Reply / Error Banner */}
+                {errorMessage && (
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      backgroundColor: colors.dangerBg,
+                      borderColor: colors.dangerBorder,
+                      borderWidth: 1,
+                      borderRadius: 14,
+                      paddingHorizontal: 14,
+                      paddingVertical: 10,
+                      marginBottom: 16,
+                      gap: 8,
+                    }}
+                  >
+                    <Text style={{ fontSize: 16 }}>⚠️</Text>
+                    <Text style={{ flex: 1, fontSize: 13, color: colors.danger, fontWeight: '600' }}>
+                      {errorMessage}
+                    </Text>
+                  </View>
+                )}
+
                 {/* Form Fields */}
                 <View style={styles.formFields}>
                   {activeTab === 'signup' && (
@@ -273,7 +338,7 @@ export function AuthScreen({
                           },
                         ]}
                         value={name}
-                        onChangeText={setName}
+                        onChangeText={(t) => { setName(t); setErrorMessage(null); }}
                         placeholder="Alex River"
                         placeholderTextColor={colors.textMuted}
                         onFocus={() => setFocusedField('name')}
@@ -294,7 +359,7 @@ export function AuthScreen({
                         },
                       ]}
                       value={email}
-                      onChangeText={setEmail}
+                      onChangeText={(t) => { setEmail(t); setErrorMessage(null); }}
                       placeholder="alex.river@example.com"
                       placeholderTextColor={colors.textMuted}
                       autoCapitalize="none"
@@ -318,7 +383,7 @@ export function AuthScreen({
                           },
                         ]}
                         value={password}
-                        onChangeText={setPassword}
+                        onChangeText={(t) => { setPassword(t); setErrorMessage(null); }}
                         placeholder="••••••••••••"
                         placeholderTextColor={colors.textMuted}
                         secureTextEntry={!showPassword}
@@ -339,11 +404,20 @@ export function AuthScreen({
                 {/* Submit Action */}
                 <Pressable
                   onPress={handleComplete}
-                  style={[styles.primaryBtn, { backgroundColor: colors.accent }]}
+                  disabled={isSubmitting}
+                  style={[
+                    styles.primaryBtn,
+                    { backgroundColor: colors.accent },
+                    isSubmitting && { opacity: 0.7 },
+                  ]}
                 >
-                  <Text style={styles.primaryBtnText}>
-                    {activeTab === 'signup' ? 'Proceed to Activity Preferences' : 'Sign In'}
-                  </Text>
+                  {isSubmitting ? (
+                    <ActivityIndicator size="small" color="#FFFFFF" />
+                  ) : (
+                    <Text style={styles.primaryBtnText}>
+                      {activeTab === 'signup' ? 'Proceed to Activity Preferences' : 'Sign In'}
+                    </Text>
+                  )}
                 </Pressable>
 
                 <Pressable
