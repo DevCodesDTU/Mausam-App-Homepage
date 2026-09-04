@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useRef, useEffect } from 'react'
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   ScrollView,
   Pressable,
   SafeAreaView,
+  Animated,
 } from 'react-native'
 import { AVAILABLE_ACTIVITIES, Activity } from '../../lib/activity-engine'
 import { ThemeMode, themes } from '../../lib/theme'
@@ -25,6 +26,24 @@ export function OnboardingScreen({
   const [selectedIds, setSelectedIds] = useState<string[]>(['surfing', 'cycling'])
   const [searchQuery, setSearchQuery] = useState('')
   const colors = themes[theme]
+
+  const onboardFadeAnim = useRef(new Animated.Value(0)).current
+  const onboardSlideAnim = useRef(new Animated.Value(14)).current
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(onboardFadeAnim, {
+        toValue: 1,
+        duration: 450,
+        useNativeDriver: true,
+      }),
+      Animated.timing(onboardSlideAnim, {
+        toValue: 0,
+        duration: 450,
+        useNativeDriver: true,
+      }),
+    ]).start()
+  }, [])
 
   const filteredActivities = useMemo(() => {
     if (!searchQuery.trim()) return AVAILABLE_ACTIVITIES
@@ -54,7 +73,7 @@ export function OnboardingScreen({
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.container}>
+        <Animated.View style={[styles.container, { opacity: onboardFadeAnim, transform: [{ translateY: onboardSlideAnim }] }]}>
           {/* Header */}
           <View style={styles.header}>
             <View style={[styles.stepBadge, { backgroundColor: colors.badgeBg, borderColor: colors.border }]}>
@@ -158,7 +177,7 @@ export function OnboardingScreen({
               Confirm Preferences ({selectedIds.length} Selected)
             </Text>
           </Pressable>
-        </View>
+        </Animated.View>
       </ScrollView>
     </SafeAreaView>
   )

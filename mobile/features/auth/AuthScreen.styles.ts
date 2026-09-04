@@ -1,38 +1,39 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
 
 export const styles = StyleSheet.create({
   screenWrapper: {
     flex: 1,
+    paddingHorizontal: 26,
+    paddingTop: Platform.OS === 'android' ? 28 : 24,
+    paddingBottom: 24,
+    justifyContent: 'space-between',
   },
-  scrollContent: {
-    flexGrow: 1,
-    paddingHorizontal: 28,
-    paddingTop: 52,
-    paddingBottom: 48,
-  },
-  container: {
+  innerContainer: {
+    flex: 1,
     width: '100%',
-    maxWidth: 480,
+    maxWidth: 440,
     alignSelf: 'center',
+    justifyContent: 'space-between',
   },
 
-  // Top Minimalist Header
+  // Top Minimalist Header (Positioned slightly lower down)
   topBar: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 28,
+    marginBottom: 16,
+    marginTop: 2,
   },
   logoBrandRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 9,
   },
   logoGlyph: {
-    fontSize: 22,
+    fontSize: 23,
   },
   logoText: {
-    fontSize: 18,
+    fontSize: 19,
     fontWeight: '900',
     letterSpacing: -0.5,
   },
@@ -44,56 +45,57 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  stepPill: {
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-    borderRadius: 16,
-    borderWidth: 1,
-  },
-  stepPillText: {
-    fontSize: 11,
-    fontWeight: '700',
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
-  },
 
-  // Progress Bar
+  // 3-Segment Interactive Horizontal Dashes (Clickable navigation)
   progressBarContainer: {
     flexDirection: 'row',
     gap: 8,
     marginBottom: 32,
+    paddingVertical: 4,
+  },
+  progressBarItem: {
+    flex: 1,
+    paddingVertical: 6,
   },
   progressBarTrack: {
-    flex: 1,
-    height: 3,
+    height: 3.5,
     borderRadius: 2,
   },
 
-  // Editorial Typography
+  // Main Content Area (Spacious & Clean with title slightly down)
+  bodyArea: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingTop: 12,
+    paddingBottom: 8,
+  },
+
+  // Editorial Typography (Title sits slightly lower down)
   kicker: {
-    fontSize: 12,
+    fontSize: 11.5,
     fontWeight: '800',
     letterSpacing: 1,
     textTransform: 'uppercase',
-    marginBottom: 10,
+    marginTop: 4,
+    marginBottom: 8,
   },
   title: {
-    fontSize: 32,
+    fontSize: 27,
     fontWeight: '900',
-    letterSpacing: -0.8,
-    lineHeight: 38,
-    marginBottom: 14,
+    letterSpacing: -0.6,
+    lineHeight: 34,
+    marginBottom: 12,
   },
   description: {
-    fontSize: 15,
-    lineHeight: 23,
-    marginBottom: 32,
+    fontSize: 14,
+    lineHeight: 21,
+    marginBottom: 26,
   },
 
-  // Open Feature Row (No nested cards!)
+  // Clean Info Rows with increased spacing
   featuresBlock: {
-    marginBottom: 32,
     gap: 20,
+    marginBottom: 22,
   },
   featureItem: {
     flexDirection: 'row',
@@ -101,68 +103,53 @@ export const styles = StyleSheet.create({
     gap: 16,
   },
   featureIconWrap: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
+    width: 42,
+    height: 42,
+    borderRadius: 13,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
   },
   featureIconText: {
-    fontSize: 20,
+    fontSize: 19,
   },
   featureTextCol: {
     flex: 1,
+    paddingTop: 1,
   },
   featureHeading: {
-    fontSize: 15,
+    fontSize: 14.5,
     fontWeight: '800',
     letterSpacing: -0.2,
     marginBottom: 3,
   },
   featureBody: {
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: 12.5,
+    lineHeight: 17,
   },
 
-  // Open Privacy Section (Clean line separator, no nested box)
-  privacySection: {
-    paddingTop: 24,
+  // Compact Clean Privacy Acceptance
+  privacyCompact: {
+    paddingTop: 16,
     borderTopWidth: 1,
-    marginBottom: 32,
-  },
-  privacyTitleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 8,
-  },
-  privacyTitle: {
-    fontSize: 14,
-    fontWeight: '800',
-    letterSpacing: -0.2,
-  },
-  privacyText: {
-    fontSize: 13,
-    lineHeight: 19,
-    marginBottom: 16,
+    marginTop: 8,
+    marginBottom: 10,
   },
   consentRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    paddingVertical: 4,
   },
   checkbox: {
     width: 22,
     height: 22,
-    borderRadius: 6,
+    borderRadius: 7,
     borderWidth: 1.5,
     alignItems: 'center',
     justifyContent: 'center',
   },
   checkmark: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '900',
   },
   consentLabel: {
@@ -172,54 +159,57 @@ export const styles = StyleSheet.create({
     fontWeight: '600',
   },
 
-  // Form Controls (Page 2)
-  backBtn: {
-    alignSelf: 'flex-start',
-    marginBottom: 20,
-    paddingVertical: 4,
-  },
-  backBtnText: {
-    fontSize: 14,
-    fontWeight: '700',
-  },
+  // Tab Switcher (Sign Up / Sign In)
+  // Tab Switcher (Sign Up / Sign In with animated sliding indicator)
   tabRow: {
     flexDirection: 'row',
-    borderRadius: 16,
-    padding: 4,
-    marginBottom: 28,
+    position: 'relative',
+    borderRadius: 14,
+    padding: 3,
+    marginBottom: 18,
     borderWidth: 1,
+    height: 44,
+  },
+  tabIndicator: {
+    position: 'absolute',
+    top: 3,
+    bottom: 3,
+    left: 3,
+    borderRadius: 11,
   },
   tabBtn: {
     flex: 1,
-    paddingVertical: 10,
-    borderRadius: 12,
+    paddingVertical: 9,
+    borderRadius: 11,
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: 2,
   },
   tabBtnText: {
     fontSize: 13,
     fontWeight: '700',
   },
 
+  // Form Fields (Clean & spacious)
   formFields: {
-    gap: 20,
-    marginBottom: 32,
+    gap: 14,
+    marginBottom: 18,
   },
   fieldGroup: {
-    gap: 8,
+    gap: 6,
   },
   fieldLabel: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '700',
-    letterSpacing: 0.4,
+    letterSpacing: 0.5,
     textTransform: 'uppercase',
   },
   input: {
-    height: 52,
-    borderRadius: 14,
+    height: 48,
+    borderRadius: 13,
     borderWidth: 1,
-    paddingHorizontal: 16,
-    fontSize: 15,
+    paddingHorizontal: 15,
+    fontSize: 14.5,
     fontWeight: '500',
   },
   passwordInputRow: {
@@ -229,25 +219,28 @@ export const styles = StyleSheet.create({
   passwordEye: {
     position: 'absolute',
     right: 14,
-    height: 52,
+    height: 48,
     justifyContent: 'center',
   },
 
-  // Actions & Buttons
+  // Bottom Actions
+  actionsSection: {
+    paddingTop: 10,
+  },
   primaryBtn: {
-    height: 54,
-    borderRadius: 16,
+    height: 52,
+    borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 14,
+    marginBottom: 10,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.12,
-    shadowRadius: 8,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 2,
   },
   primaryBtnDisabled: {
-    opacity: 0.4,
+    opacity: 0.35,
   },
   primaryBtnText: {
     color: '#FFFFFF',
@@ -256,13 +249,13 @@ export const styles = StyleSheet.create({
     letterSpacing: -0.2,
   },
   guestBtn: {
-    height: 48,
-    borderRadius: 14,
+    height: 38,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
   },
   guestBtnText: {
-    fontSize: 13,
+    fontSize: 12.5,
     fontWeight: '600',
   },
 })
