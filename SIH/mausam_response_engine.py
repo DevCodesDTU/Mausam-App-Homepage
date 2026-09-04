@@ -1,4 +1,7 @@
-
+"""responses.json              Stores the rules and data
+mausam_response_engine.py   Creates the response
+transcript.py               Saves the response
+transcript.json             The saved result"""
 
 from __future__ import annotations
 
