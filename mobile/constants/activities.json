@@ -1,0 +1,415 @@
+{
+  "groups": [
+    {
+      "id": "sea_sports",
+      "name": "Sea & Water Sports",
+      "icon": "🌊",
+      "description": "Marine telemetry, swell, tides, water temp & coastal winds",
+      "activities": [
+        {
+          "id": "swimming",
+          "name": "Swimming",
+          "icon": "🏊",
+          "category": "Sea & Water Sports",
+          "description": "Open water, sea and outdoor pool laps"
+        },
+        {
+          "id": "scuba_diving",
+          "name": "Scuba Diving",
+          "icon": "🤿",
+          "category": "Sea & Water Sports",
+          "description": "Reef and marine depth exploration"
+        },
+        {
+          "id": "surfboarding",
+          "name": "Surfboarding",
+          "icon": "🏄",
+          "category": "Sea & Water Sports",
+          "description": "Ocean waves, breaks, swell and offshore winds"
+        },
+        {
+          "id": "sailing",
+          "name": "Sailing",
+          "icon": "⛵",
+          "category": "Sea & Water Sports",
+          "description": "Windsurfing, catamaran and yacht cruising"
+        },
+        {
+          "id": "kayaking",
+          "name": "Kayaking",
+          "icon": "🛶",
+          "category": "Sea & Water Sports",
+          "description": "Coastal and river paddle excursions"
+        }
+      ]
+    },
+    {
+      "id": "cardio_endurance",
+      "name": "Cardio & Endurance",
+      "icon": "🏃",
+      "description": "Air density, ozone, road grip & aerobic cooling windows",
+      "activities": [
+        {
+          "id": "cycling",
+          "name": "Cycling",
+          "icon": "🚴",
+          "category": "Cardio & Endurance",
+          "description": "Road and tarmac endurance bike riding"
+        },
+        {
+          "id": "running",
+          "name": "Running",
+          "icon": "🏃",
+          "category": "Cardio & Endurance",
+          "description": "Outdoor marathon pace, jogging and intervals"
+        },
+        {
+          "id": "trail_running",
+          "name": "Trail Running",
+          "icon": "🏔️",
+          "category": "Cardio & Endurance",
+          "description": "Off-road mountain and wilderness runs"
+        }
+      ]
+    },
+    {
+      "id": "mountain_outdoor",
+      "name": "Mountain & Outdoor",
+      "icon": "🥾",
+      "description": "Elevation shifts, rain radar, UV index & daylight hours",
+      "activities": [
+        {
+          "id": "hiking",
+          "name": "Hiking",
+          "icon": "🥾",
+          "category": "Mountain & Outdoor",
+          "description": "Scenic alpine trails and nature walks"
+        },
+        {
+          "id": "rock_climbing",
+          "name": "Rock Climbing",
+          "icon": "🧗",
+          "category": "Mountain & Outdoor",
+          "description": "Bouldering, outdoor crags and pitch climbing"
+        },
+        {
+          "id": "camping",
+          "name": "Camping",
+          "icon": "⛺",
+          "category": "Mountain & Outdoor",
+          "description": "Overnight wilderness bivouac and outdoor setups"
+        }
+      ]
+    },
+    {
+      "id": "urban_action",
+      "name": "Urban & Action",
+      "icon": "🛹",
+      "description": "Dry ground, moderate gusts & concrete thermal balance",
+      "activities": [
+        {
+          "id": "skateboarding",
+          "name": "Skateboarding",
+          "icon": "🛹",
+          "category": "Urban & Action",
+          "description": "Skate park, bowl and street cruising"
+        },
+        {
+          "id": "rollerblading",
+          "name": "Rollerblading",
+          "icon": "🛼",
+          "category": "Urban & Action",
+          "description": "Paved parkways and outdoor inline skating"
+        }
+      ]
+    },
+    {
+      "id": "wellness_mindful",
+      "name": "Wellness & Mindful",
+      "icon": "🧘",
+      "description": "Gentle breeze, tranquil air & peaceful temperature bands",
+      "activities": [
+        {
+          "id": "yoga",
+          "name": "Yoga",
+          "icon": "🧘",
+          "category": "Wellness & Mindful",
+          "description": "Outdoor vinyasa, grounding and breathwork"
+        },
+        {
+          "id": "pilates",
+          "name": "Pilates",
+          "icon": "🤸",
+          "category": "Wellness & Mindful",
+          "description": "Core stability and mat work under open sky"
+        },
+        {
+          "id": "meditation",
+          "name": "Outdoor Meditation",
+          "icon": "🕯️",
+          "category": "Wellness & Mindful",
+          "description": "Mindfulness sessions in serene natural spots"
+        }
+      ]
+    },
+    {
+      "id": "fairway_racket",
+      "name": "Fairway & Racket",
+      "icon": "⛳",
+      "description": "Low gust variance, high visibility & turf firmness",
+      "activities": [
+        {
+          "id": "golf",
+          "name": "Golf",
+          "icon": "⛳",
+          "category": "Fairway & Racket",
+          "description": "18-hole outdoor fairway and links play"
+        },
+        {
+          "id": "tennis",
+          "name": "Tennis",
+          "icon": "🎾",
+          "category": "Fairway & Racket",
+          "description": "Hard court and clay outdoor matches"
+        }
+      ]
+    }
+  ],
+  "rules": [
+    {
+      "activityId": "swimming",
+      "conditions": ["Clear", "Partly Cloudy", "Sunny"],
+      "minTemp": 22,
+      "maxTemp": 36,
+      "maxPrecipitation": 10,
+      "minWind": 0,
+      "maxWind": 25,
+      "title": "Inviting Coastal Water",
+      "subtitle": "Warm ambient temperature and calm winds ideal for swimming.",
+      "badge": "Prime Swim Slot",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "scuba_diving",
+      "conditions": ["Clear", "Partly Cloudy", "Sunny"],
+      "minTemp": 20,
+      "maxTemp": 34,
+      "maxPrecipitation": 15,
+      "minWind": 0,
+      "maxWind": 20,
+      "title": "Clear Marine Visibility",
+      "subtitle": "Gentle swell and low surface chop for diving.",
+      "badge": "Deep Dive Window",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "surfboarding",
+      "conditions": ["Clear", "Partly Cloudy", "Sunny", "Overcast"],
+      "minTemp": 16,
+      "maxTemp": 32,
+      "maxPrecipitation": 30,
+      "minWind": 8,
+      "maxWind": 35,
+      "title": "Offshore Winds & Clean Breaks",
+      "subtitle": "Consistent swell generation with offshore breeze.",
+      "badge": "Epic Wave Window",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "sailing",
+      "conditions": ["Clear", "Partly Cloudy", "Sunny", "Overcast"],
+      "minTemp": 14,
+      "maxTemp": 32,
+      "maxPrecipitation": 25,
+      "minWind": 12,
+      "maxWind": 38,
+      "title": "Steady Air Flow",
+      "subtitle": "Brisk continuous wind ideal for sail propulsion.",
+      "badge": "Brisk Sail Wind",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "kayaking",
+      "conditions": ["Clear", "Partly Cloudy", "Sunny"],
+      "minTemp": 16,
+      "maxTemp": 30,
+      "maxPrecipitation": 15,
+      "minWind": 0,
+      "maxWind": 20,
+      "title": "Tranquil Waterway",
+      "subtitle": "Glassy water and light air current for smooth paddling.",
+      "badge": "Calm Paddle",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "cycling",
+      "conditions": ["Clear", "Partly Cloudy", "Sunny"],
+      "minTemp": 14,
+      "maxTemp": 29,
+      "maxPrecipitation": 10,
+      "minWind": 0,
+      "maxWind": 28,
+      "title": "Dry Tarmac & Crisp Air",
+      "subtitle": "High road traction and comfortable aerodynamic airflow.",
+      "badge": "Fast Rolling Window",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "running",
+      "conditions": ["Clear", "Partly Cloudy", "Overcast"],
+      "minTemp": 10,
+      "maxTemp": 25,
+      "maxPrecipitation": 20,
+      "minWind": 0,
+      "maxWind": 30,
+      "title": "Optimal Aerobic Climate",
+      "subtitle": "Cool ambient air helps regulate core body temperature.",
+      "badge": "Prime Pacing Hours",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "trail_running",
+      "conditions": ["Clear", "Partly Cloudy", "Overcast"],
+      "minTemp": 10,
+      "maxTemp": 26,
+      "maxPrecipitation": 15,
+      "minWind": 0,
+      "maxWind": 25,
+      "title": "Stable Singletrack Conditions",
+      "subtitle": "Dry forest floor and cool altitude breeze.",
+      "badge": "Trail Summit Window",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "hiking",
+      "conditions": ["Clear", "Partly Cloudy", "Sunny", "Overcast"],
+      "minTemp": 12,
+      "maxTemp": 27,
+      "maxPrecipitation": 20,
+      "minWind": 0,
+      "maxWind": 32,
+      "title": "Vibrant Panorama Window",
+      "subtitle": "High cloud ceiling and crisp visibility over ridges.",
+      "badge": "Prime Trek Window",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "rock_climbing",
+      "conditions": ["Clear", "Partly Cloudy", "Sunny"],
+      "minTemp": 14,
+      "maxTemp": 26,
+      "maxPrecipitation": 5,
+      "minWind": 0,
+      "maxWind": 25,
+      "title": "Dry Rock Friction",
+      "subtitle": "Zero surface condensation ensuring high chalk grip.",
+      "badge": "High Friction Crag",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "camping",
+      "conditions": ["Clear", "Partly Cloudy"],
+      "minTemp": 12,
+      "maxTemp": 28,
+      "maxPrecipitation": 10,
+      "minWind": 0,
+      "maxWind": 22,
+      "title": "Starry Night Canopy",
+      "subtitle": "Gentle night drop and stable overnight barometrics.",
+      "badge": "Clear Sky Bivouac",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "skateboarding",
+      "conditions": ["Clear", "Partly Cloudy", "Sunny"],
+      "minTemp": 15,
+      "maxTemp": 30,
+      "maxPrecipitation": 0,
+      "minWind": 0,
+      "maxWind": 25,
+      "title": "Dry Concrete Grip",
+      "subtitle": "Zero moisture on street transitions and coping.",
+      "badge": "Smooth Roll Window",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "rollerblading",
+      "conditions": ["Clear", "Partly Cloudy", "Sunny"],
+      "minTemp": 15,
+      "maxTemp": 29,
+      "maxPrecipitation": 0,
+      "minWind": 0,
+      "maxWind": 24,
+      "title": "Paved Trail Clear",
+      "subtitle": "Clean and dry surface for inline glide.",
+      "badge": "Gliding Window",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "yoga",
+      "conditions": ["Clear", "Partly Cloudy", "Sunny", "Overcast"],
+      "minTemp": 18,
+      "maxTemp": 30,
+      "maxPrecipitation": 10,
+      "minWind": 0,
+      "maxWind": 18,
+      "title": "Serene Morning Stillness",
+      "subtitle": "Gentle thermal equilibrium for focused mindful practice.",
+      "badge": "Zen Flow Hours",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "pilates",
+      "conditions": ["Clear", "Partly Cloudy", "Sunny"],
+      "minTemp": 18,
+      "maxTemp": 30,
+      "maxPrecipitation": 10,
+      "minWind": 0,
+      "maxWind": 18,
+      "title": "Tranquil Outdoor Mat Slot",
+      "subtitle": "Comfortable warmth for deep muscle activation.",
+      "badge": "Core Strength Slot",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "meditation",
+      "conditions": ["Clear", "Partly Cloudy", "Sunny"],
+      "minTemp": 16,
+      "maxTemp": 28,
+      "maxPrecipitation": 5,
+      "minWind": 0,
+      "maxWind": 15,
+      "title": "Quiet Nature Resonance",
+      "subtitle": "Soft ambient acoustics and calm barometrics.",
+      "badge": "Stillness Window",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "golf",
+      "conditions": ["Clear", "Partly Cloudy", "Sunny"],
+      "minTemp": 15,
+      "maxTemp": 29,
+      "maxPrecipitation": 10,
+      "minWind": 0,
+      "maxWind": 25,
+      "title": "Predictable Ball Flight",
+      "subtitle": "Light breeze, firm greens, and clear fairway sightlines.",
+      "badge": "Sub-Par Fairway Slot",
+      "sentiment": "positive"
+    },
+    {
+      "activityId": "tennis",
+      "conditions": ["Clear", "Partly Cloudy", "Sunny"],
+      "minTemp": 16,
+      "maxTemp": 30,
+      "maxPrecipitation": 5,
+      "minWind": 0,
+      "maxWind": 20,
+      "title": "True Court Bounce",
+      "subtitle": "Dry baselines and low crosswinds for clean rallies.",
+      "badge": "Clean Match Window",
+      "sentiment": "positive"
+    }
+  ]
+}
+

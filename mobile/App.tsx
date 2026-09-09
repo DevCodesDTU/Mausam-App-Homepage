@@ -3,6 +3,7 @@ import { View, StatusBar } from 'react-native'
 import { SplashScreen } from './features/splash/SplashScreen'
 import { AuthScreen } from './features/auth/AuthScreen'
 import { OnboardingScreen } from './features/onboarding/OnboardingScreen'
+import { HealthConditionsScreen } from './features/health/HealthConditionsScreen'
 import { HomeScreen } from './features/weather/HomeScreen'
 import { AlertsScreen } from './features/alerts/AlertsScreen'
 import { ProfileScreen } from './features/profile/ProfileScreen'
@@ -14,6 +15,7 @@ type AppPhase = 'splash' | 'auth' | 'onboarding' | 'main'
 
 export default function App() {
   const [phase, setPhase] = useState<AppPhase>('splash')
+  const [onboardingStep, setOnboardingStep] = useState<1 | 2>(1)
   const [currentTab, setCurrentTab] = useState<TabScreen>('home')
   const [theme, setTheme] = useState<ThemeMode>('dark')
   const [user, setUser] = useState<{ name: string; email: string }>({
@@ -21,9 +23,11 @@ export default function App() {
     email: 'alex.river@example.com',
   })
   const [userActivities, setUserActivities] = useState<string[]>([
-    'surfing',
+    'swimming',
+    'surfboarding',
     'cycling',
   ])
+  const [userHealthConditions, setUserHealthConditions] = useState<string[]>(['none'])
   const [unit, setUnit] = useState<'C' | 'F'>('C')
 
   const toggleTheme = () => {
@@ -32,11 +36,17 @@ export default function App() {
 
   const handleAuthSuccess = (userData: { name: string; email: string }) => {
     setUser(userData)
+    setOnboardingStep(1)
     setPhase('onboarding')
   }
 
-  const handleOnboardingComplete = (selectedActivities: string[]) => {
+  const handleActivitiesSelected = (selectedActivities: string[]) => {
     setUserActivities(selectedActivities)
+    setOnboardingStep(2)
+  }
+
+  const handleHealthConditionsComplete = (selectedConditions: string[]) => {
+    setUserHealthConditions(selectedConditions)
     setPhase('main')
     setCurrentTab('home')
   }
@@ -75,11 +85,22 @@ export default function App() {
         />
       )}
 
-      {/* 3. Onboarding Screen */}
-      {phase === 'onboarding' && (
+      {/* 3. Onboarding: Step 1 (Activities) & Step 2 (Health Conditions) */}
+      {phase === 'onboarding' && onboardingStep === 1 && (
         <OnboardingScreen
           userName={user.name}
-          onComplete={handleOnboardingComplete}
+          initialActivities={userActivities}
+          onComplete={handleActivitiesSelected}
+          theme={theme}
+        />
+      )}
+
+      {phase === 'onboarding' && onboardingStep === 2 && (
+        <HealthConditionsScreen
+          userName={user.name}
+          initialConditions={userHealthConditions}
+          onComplete={handleHealthConditionsComplete}
+          onBack={() => setOnboardingStep(1)}
           theme={theme}
         />
       )}
@@ -110,10 +131,15 @@ export default function App() {
               userName={user.name}
               userEmail={user.email}
               userActivities={userActivities}
+              userHealthConditions={userHealthConditions}
               unit={unit}
               onToggleUnit={handleToggleUnit}
               onUpdateActivities={setUserActivities}
-              onResetToOnboarding={() => setPhase('onboarding')}
+              onUpdateHealthConditions={setUserHealthConditions}
+              onResetToOnboarding={() => {
+                setOnboardingStep(1)
+                setPhase('onboarding')
+              }}
               onSignOut={handleSignOut}
               theme={theme}
               onToggleTheme={toggleTheme}

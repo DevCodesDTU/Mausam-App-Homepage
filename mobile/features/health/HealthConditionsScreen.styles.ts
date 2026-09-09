@@ -43,6 +43,27 @@ export const styles = StyleSheet.create({
     lineHeight: 21,
   },
 
+  // Privacy notice callout
+  noticeCard: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    padding: 14,
+    borderRadius: 16,
+    borderWidth: 1,
+    gap: 12,
+    marginBottom: 20,
+  },
+  noticeIcon: {
+    fontSize: 20,
+    marginTop: 1,
+  },
+  noticeText: {
+    flex: 1,
+    fontSize: 12,
+    lineHeight: 17,
+    fontWeight: '500',
+  },
+
   // Search Bar
   searchContainer: {
     flexDirection: 'row',
@@ -70,163 +91,101 @@ export const styles = StyleSheet.create({
     fontWeight: '700',
   },
 
-  // Activity Groups Accordion
-  groupsList: {
-    gap: 16,
+  // Conditions List
+  conditionsList: {
+    gap: 12,
     marginBottom: 28,
   },
-  groupCard: {
-    borderRadius: 20,
-    borderWidth: 1.5,
-    overflow: 'hidden',
-  },
-  groupHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+  conditionCard: {
     padding: 16,
-  },
-  groupHeaderLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 14,
-    flex: 1,
-    paddingRight: 10,
-  },
-  groupIconWrap: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  groupIcon: {
-    fontSize: 22,
-  },
-  groupHeaderText: {
-    flex: 1,
-  },
-  groupTitleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 2,
-  },
-  groupTitle: {
-    fontSize: 16,
-    fontWeight: '800',
-    letterSpacing: -0.3,
-  },
-  groupSubtitle: {
-    fontSize: 12,
-    lineHeight: 16,
-  },
-  groupHeaderRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  groupCountBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 10,
-    borderWidth: 1,
-  },
-  groupCountText: {
-    fontSize: 11,
-    fontWeight: '800',
-  },
-  chevronIcon: {
-    fontSize: 13,
-    fontWeight: '800',
-  },
-  groupContent: {
-    paddingHorizontal: 14,
-    paddingBottom: 16,
-    paddingTop: 4,
-    borderTopWidth: 1,
-  },
-  groupQuickBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 2,
-    marginBottom: 8,
-  },
-  groupQuickLabel: {
-    fontSize: 11.5,
-    fontWeight: '600',
-  },
-  groupQuickActionText: {
-    fontSize: 12,
-    fontWeight: '700',
-  },
-
-  // 2-Sub-Activities-Per-Row Inside Group Dropdown
-  grid: {
-    width: '100%',
-  },
-  pairRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 10,
-    marginBottom: 10,
-  },
-  activityCard: {
-    flex: 1,
-    padding: 12,
-    borderRadius: 15,
+    borderRadius: 18,
     borderWidth: 1.5,
     justifyContent: 'space-between',
-    minHeight: 110,
   },
-  activityCardPlaceholder: {
-    flex: 1,
-  },
-  cardTopRow: {
+  cardMainRow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'space-between',
-    marginBottom: 8,
+    gap: 12,
+  },
+  cardLeft: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+    flex: 1,
   },
   iconBox: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
+    width: 44,
+    height: 44,
+    borderRadius: 13,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  activityIcon: {
-    fontSize: 18,
+  conditionIcon: {
+    fontSize: 22,
+  },
+  conditionInfo: {
+    flex: 1,
+  },
+  nameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 4,
+  },
+  conditionName: {
+    fontSize: 15.5,
+    fontWeight: '800',
+    letterSpacing: -0.2,
+  },
+  categoryPill: {
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: 8,
+    borderWidth: 1,
+  },
+  categoryText: {
+    fontSize: 10,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+  },
+  conditionDesc: {
+    fontSize: 12.5,
+    lineHeight: 17,
+    marginBottom: 8,
+  },
+  triggerBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+    borderRadius: 9,
+    alignSelf: 'flex-start',
+  },
+  triggerIcon: {
+    fontSize: 11,
+  },
+  triggerText: {
+    fontSize: 11,
+    fontWeight: '600',
   },
   checkCircle: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
     borderWidth: 1.5,
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 2,
   },
   checkMark: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '900',
   },
-  activityInfo: {
-    marginTop: 'auto',
-  },
-  activityName: {
-    fontSize: 14,
-    fontWeight: '800',
-    letterSpacing: -0.2,
-    marginBottom: 2,
-  },
-  activityDesc: {
-    fontSize: 11,
-    lineHeight: 14,
-  },
 
-  // Empty Search State
+  // Empty State
   emptyBox: {
     width: '100%',
     paddingVertical: 32,
@@ -240,7 +199,10 @@ export const styles = StyleSheet.create({
     fontWeight: '600',
   },
 
-  // Submit Button
+  // Actions
+  actionArea: {
+    gap: 12,
+  },
   submitBtn: {
     height: 54,
     borderRadius: 16,
@@ -252,13 +214,21 @@ export const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 3,
   },
-  submitBtnDisabled: {
-    opacity: 0.4,
-  },
   submitBtnText: {
     color: '#FFFFFF',
     fontSize: 15,
     fontWeight: '800',
     letterSpacing: -0.2,
   },
+  backBtn: {
+    height: 46,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backBtnText: {
+    fontSize: 13.5,
+    fontWeight: '700',
+  },
 })
+

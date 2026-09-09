@@ -1,4 +1,5 @@
 import activityRulesData from '../constants/activity-rules.json'
+import activitiesData from '../constants/activities.json'
 
 export interface Activity {
   id: string
@@ -6,6 +7,14 @@ export interface Activity {
   icon: string
   category: string
   description: string
+}
+
+export interface ActivityGroup {
+  id: string
+  name: string
+  icon: string
+  description: string
+  activities: Activity[]
 }
 
 export interface ActivityRule {
@@ -42,8 +51,17 @@ export interface ActivitySuggestionResult {
   isRecommended: boolean
 }
 
-export const AVAILABLE_ACTIVITIES: Activity[] = activityRulesData.activities
-export const ACTIVITY_RULES: ActivityRule[] = activityRulesData.rules as ActivityRule[]
+export const ACTIVITY_GROUPS: ActivityGroup[] = (activitiesData?.groups || []) as ActivityGroup[]
+
+// Flattened list of all activities across groups for backwards compatibility
+export const AVAILABLE_ACTIVITIES: Activity[] =
+  ACTIVITY_GROUPS.length > 0
+    ? ACTIVITY_GROUPS.flatMap((g) => g.activities)
+    : activityRulesData.activities
+
+export const ACTIVITY_RULES: ActivityRule[] =
+  ((activitiesData as any)?.rules || activityRulesData.rules) as ActivityRule[]
+
 export const FALLBACK_SUGGESTIONS = activityRulesData.fallbacks
 
 /**

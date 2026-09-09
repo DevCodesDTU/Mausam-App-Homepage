@@ -7,6 +7,7 @@ import {
   Pressable,
 } from 'react-native'
 import { AVAILABLE_ACTIVITIES } from '../../lib/activity-engine'
+import { HEALTH_CONDITIONS } from '../health/HealthConditionsScreen'
 import { ThemeMode, themes } from '../../lib/theme'
 import { styles } from './ProfileScreen.styles'
 
@@ -14,9 +15,11 @@ interface ProfileScreenProps {
   userName?: string
   userEmail?: string
   userActivities?: string[]
+  userHealthConditions?: string[]
   unit?: 'C' | 'F'
   onToggleUnit?: () => void
   onUpdateActivities?: (activities: string[]) => void
+  onUpdateHealthConditions?: (conditions: string[]) => void
   onResetToOnboarding?: () => void
   onSignOut?: () => void
   theme?: ThemeMode
@@ -27,9 +30,11 @@ export function ProfileScreen({
   userName = 'Explorer',
   userEmail = 'user@example.com',
   userActivities = [],
+  userHealthConditions = ['none'],
   unit = 'C',
   onToggleUnit = () => {},
   onUpdateActivities = () => {},
+  onUpdateHealthConditions = () => {},
   onResetToOnboarding = () => {},
   onSignOut = () => {},
   theme = 'dark',
@@ -45,6 +50,21 @@ export function ProfileScreen({
       }
     } else {
       onUpdateActivities([...currentList, id])
+    }
+  }
+
+  const toggleHealthCondition = (id: string) => {
+    const current = userHealthConditions || []
+    if (id === 'none') {
+      onUpdateHealthConditions(['none'])
+      return
+    }
+    const withoutNone = current.filter((c) => c !== 'none')
+    if (withoutNone.includes(id)) {
+      const remaining = withoutNone.filter((c) => c !== id)
+      onUpdateHealthConditions(remaining.length === 0 ? ['none'] : remaining)
+    } else {
+      onUpdateHealthConditions([...withoutNone, id])
     }
   }
 
@@ -176,6 +196,36 @@ export function ProfileScreen({
             })}
           </View>
 
+          {/* Health & Environmental Sensitivities */}
+          <Text style={[styles.sectionHeader, { color: colors.textMuted }]}>Environmental Health & Sensitivities</Text>
+          <View style={styles.activitiesGrid}>
+            {HEALTH_CONDITIONS.map((cond) => {
+              const isActive = (userHealthConditions || []).includes(cond.id)
+              return (
+                <Pressable
+                  key={cond.id}
+                  onPress={() => toggleHealthCondition(cond.id)}
+                  style={[
+                    styles.activityTag,
+                    { backgroundColor: colors.cardSecondary, borderColor: colors.border },
+                    isActive && { backgroundColor: colors.accentBg, borderColor: colors.accent },
+                  ]}
+                >
+                  <Text style={styles.activityTagIcon}>{cond.icon}</Text>
+                  <Text
+                    style={[
+                      styles.activityTagName,
+                      { color: colors.textSecondary },
+                      isActive && { color: colors.textPrimary, fontWeight: '800' },
+                    ]}
+                  >
+                    {cond.name}
+                  </Text>
+                </Pressable>
+              )
+            })}
+          </View>
+
           {/* Quick Actions */}
           <Text style={[styles.sectionHeader, { color: colors.textMuted }]}>Preferences & Account</Text>
           <Pressable
@@ -184,7 +234,7 @@ export function ProfileScreen({
           >
             <View style={styles.actionItemLeft}>
               <Text style={styles.actionIcon}>🎯</Text>
-              <Text style={[styles.actionLabel, { color: colors.textPrimary }]}>Change Onboarding Activities</Text>
+              <Text style={[styles.actionLabel, { color: colors.textPrimary }]}>Reconfigure Activities & Health Setup</Text>
             </View>
             <Text style={[styles.actionChevron, { color: colors.textMuted }]}>→</Text>
           </Pressable>
