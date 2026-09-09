@@ -1,0 +1,321 @@
+
+{
+  "schema_version": "1.0",
+  "description": "Data-only rules for the silent Mausam response engine.",
+  "sample_inputs": [
+    {
+      "id": "mumbai_rainy_morning",
+      "location": "Mumbai, Maharashtra",
+      "date": "2026-09-05",
+      "time": "08:00",
+      "temperature": 28,
+      "feels_like": 31,
+      "humidity": 84,
+      "precipitation_probability": 80,
+      "precipitation_mm": 4.2,
+      "wind_kmh": 26,
+      "uv_index": 2,
+      "cloud_cover": 91,
+      "weather_condition": "Light rain"
+    },
+    {
+      "id": "delhi_hot_afternoon",
+      "location": "New Delhi, Delhi",
+      "date": "2026-09-05",
+      "time": "14:00",
+      "temperature": 42,
+      "feels_like": 47,
+      "humidity": 48,
+      "precipitation_probability": 5,
+      "precipitation_mm": 0,
+      "wind_kmh": 18,
+      "uv_index": 10,
+      "cloud_cover": 12,
+      "weather_condition": "Sunny"
+    },
+    {
+      "id": "leh_cold_morning",
+      "location": "Leh, Ladakh",
+      "date": "2026-09-06",
+      "time": "06:00",
+      "temperature": 4,
+      "feels_like": 1,
+      "humidity": 42,
+      "precipitation_probability": 10,
+      "precipitation_mm": 0,
+      "wind_kmh": 22,
+      "uv_index": 1,
+      "cloud_cover": 20,
+      "weather_condition": "Clear sky"
+    },
+    {
+      "id": "assam_storm_evening",
+      "location": "Guwahati, Assam",
+      "date": "2026-09-06",
+      "time": "19:00",
+      "temperature": 27,
+      "feels_like": 31,
+      "humidity": 88,
+      "precipitation_probability": 90,
+      "precipitation_mm": 12.5,
+      "wind_kmh": 48,
+      "uv_index": 0,
+      "cloud_cover": 100,
+      "weather_condition": "Thunderstorm"
+    }
+  ],
+  "conditions": [
+    {
+      "id": "extreme_heat",
+      "when": { "field": "temperature", "operator": ">=", "value": 40 },
+      "message": "Very hot weather is expected.",
+      "action": "Avoid the hottest hours, drink water often, and take breaks in the shade.",
+      "applies_to": ["outdoor", "travel", "work", "health", "pets"]
+    },
+    {
+      "id": "heat_stress",
+      "when": { "field": "temperature", "operator": ">=", "value": 35 },
+      "message": "Hot weather may cause discomfort.",
+      "action": "Use sun protection, carry water, and reduce the length of outdoor activities.",
+      "applies_to": ["outdoor", "travel", "work", "health", "pets"]
+    },
+    {
+      "id": "very_cold",
+      "when": { "field": "temperature", "operator": "<=", "value": 8 },
+      "message": "Very cold weather is expected.",
+      "action": "Wear warm layers and avoid staying outside for a long time.",
+      "applies_to": ["outdoor", "travel", "work", "health", "pets"]
+    },
+    {
+      "id": "high_rain",
+      "when": { "field": "precipitation_probability", "operator": ">=", "value": 60 },
+      "message": "Rain is likely.",
+      "action": "Carry rain protection and allow extra travel time.",
+      "applies_to": ["outdoor", "travel", "work", "school", "pets"]
+    },
+    {
+      "id": "heavy_rain",
+      "when": { "field": "precipitation_mm", "operator": ">=", "value": 10 },
+      "message": "Heavy rain is possible.",
+      "action": "Postpone outdoor plans when possible and avoid flooded roads.",
+      "applies_to": ["outdoor", "travel", "work", "school", "pets"]
+    },
+    {
+      "id": "strong_wind",
+      "when": { "field": "wind_kmh", "operator": ">=", "value": 35 },
+      "message": "Strong wind is expected.",
+      "action": "Secure loose objects and be careful near trees, water, and open roads.",
+      "applies_to": ["outdoor", "travel", "work", "water", "pets"]
+    },
+    {
+      "id": "high_uv",
+      "when": { "field": "uv_index", "operator": ">=", "value": 6 },
+      "message": "UV levels are high.",
+      "action": "Use sunscreen, wear a hat, seek shade, and drink water.",
+      "applies_to": ["outdoor", "health", "pets", "school"]
+    },
+    {
+      "id": "high_humidity",
+      "when": { "field": "humidity", "operator": ">=", "value": 80 },
+      "message": "Humidity is high.",
+      "action": "Take more rest breaks because the weather may feel warmer than the temperature suggests.",
+      "applies_to": ["outdoor", "work", "health", "pets"]
+    },
+    {
+      "id": "thunderstorm",
+      "when": { "field": "weather_condition", "contains": "thunderstorm" },
+      "message": "A thunderstorm is possible.",
+      "action": "Move indoors and avoid open areas, tall trees, and water.",
+      "applies_to": ["outdoor", "travel", "work", "water", "school", "pets"]
+    },
+    {
+      "id": "fog",
+      "when": { "field": "weather_condition", "contains": "fog" },
+      "message": "Fog may reduce visibility.",
+      "action": "Travel slowly, use lights, and leave extra time for the journey.",
+      "applies_to": ["travel", "outdoor", "work", "school"]
+    }
+  ],
+  "safe_response": {
+    "message": "The weather looks suitable for this plan.",
+    "action": "Continue normally, but check local updates before leaving."
+  },
+  "persona_templates": [
+    {
+      "id": "traveler",
+      "name": "Traveler",
+      "risk_tags": ["travel", "outdoor"],
+      "advice": {
+        "rain": "Keep a rain cover for bags and allow extra time.",
+        "heat": "Plan sightseeing in the cooler parts of the day.",
+        "cold": "Pack an extra warm layer.",
+        "default": "Keep your phone charged and share your route with someone."
+      }
+    },
+    {
+      "id": "farmer",
+      "name": "Farmer",
+      "risk_tags": ["outdoor", "work", "health"],
+      "advice": {
+        "rain": "Protect tools and check field drainage before starting work.",
+        "heat": "Work early or late and take regular water breaks.",
+        "cold": "Protect yourself and sensitive crops from cold conditions.",
+        "default": "Check soil and crop conditions before field work."
+      }
+    },
+    {
+      "id": "student",
+      "name": "Student",
+      "risk_tags": ["school", "travel", "outdoor"],
+      "advice": {
+        "rain": "Carry a waterproof cover for books and electronics.",
+        "heat": "Carry water and use shade while waiting outside.",
+        "cold": "Take a warm layer for the journey to school or college.",
+        "default": "Keep enough time for the journey."
+      }
+    },
+    {
+      "id": "parent",
+      "name": "Parent",
+      "risk_tags": ["family", "health", "outdoor"],
+      "advice": {
+        "rain": "Pack dry clothes and keep children away from flooded areas.",
+        "heat": "Keep children in shade and offer water often.",
+        "cold": "Dress children in warm layers.",
+        "default": "Keep a simple backup indoor plan."
+      }
+    },
+    {
+      "id": "commuter",
+      "name": "Commuter",
+      "risk_tags": ["travel", "outdoor"],
+      "advice": {
+        "rain": "Leave early and check road or train updates.",
+        "heat": "Carry water and avoid waiting in direct sun.",
+        "cold": "Wear a warm layer during the journey.",
+        "default": "Check your route before leaving."
+      }
+    },
+    {
+      "id": "fitness",
+      "name": "Fitness Enthusiast",
+      "risk_tags": ["outdoor", "health"],
+      "advice": {
+        "rain": "Move the workout indoors or choose a dry, safe route.",
+        "heat": "Reduce intensity and exercise during cooler hours.",
+        "cold": "Warm up well and wear suitable layers.",
+        "default": "Start slowly and stop if you feel unwell."
+      }
+    },
+    {
+      "id": "senior",
+      "name": "Senior Citizen",
+      "risk_tags": ["health", "outdoor"],
+      "advice": {
+        "rain": "Avoid slippery roads and postpone non-essential travel.",
+        "heat": "Choose a cool indoor place and keep water nearby.",
+        "cold": "Limit time outside and keep warm.",
+        "default": "Choose a shorter, comfortable outing."
+      }
+    },
+    {
+      "id": "outdoor_worker",
+      "name": "Outdoor Worker",
+      "risk_tags": ["work", "outdoor", "health"],
+      "advice": {
+        "rain": "Use waterproof safety gear and check the work surface.",
+        "heat": "Take scheduled shade and water breaks.",
+        "cold": "Wear protective warm clothing.",
+        "default": "Use the correct safety equipment for the job."
+      }
+    },
+    {
+      "id": "photographer",
+      "name": "Photographer",
+      "risk_tags": ["outdoor", "creative"],
+      "advice": {
+        "rain": "Use a camera cover and protect spare batteries.",
+        "heat": "Keep equipment out of direct sun and plan for golden hour.",
+        "cold": "Protect batteries and lenses from condensation.",
+        "default": "Check the light direction before choosing a location."
+      }
+    },
+    {
+      "id": "event_planner",
+      "name": "Event Planner",
+      "risk_tags": ["outdoor", "work", "travel"],
+      "advice": {
+        "rain": "Keep a covered backup space and protect electrical equipment.",
+        "heat": "Add shade, water stations, and shorter outdoor sessions.",
+        "cold": "Arrange warm areas for guests and staff.",
+        "default": "Keep an indoor backup plan ready."
+      }
+    },
+    {
+      "id": "pet_owner",
+      "name": "Pet Owner",
+      "risk_tags": ["pets", "outdoor", "health"],
+      "advice": {
+        "rain": "Keep the walk short and dry your pet afterwards.",
+        "heat": "Walk during cooler hours and check the pavement.",
+        "cold": "Keep the walk short and use a warm, dry resting place.",
+        "default": "Carry water and watch your pet for signs of discomfort."
+      }
+    },
+    {
+      "id": "healthcare_worker",
+      "name": "Healthcare Worker",
+      "risk_tags": ["health", "travel", "work"],
+      "advice": {
+        "rain": "Allow extra travel time and keep essential items dry.",
+        "heat": "Stay hydrated during long shifts.",
+        "cold": "Carry a warm layer for travel between locations.",
+        "default": "Keep essential supplies ready before your shift."
+      }
+    }
+  ],
+  "persona_contexts": [
+    { "id": "urban", "name": "Urban" },
+    { "id": "rural", "name": "Rural" },
+    { "id": "coastal", "name": "Coastal" },
+    { "id": "mountain", "name": "Mountain" },
+    { "id": "hot_climate", "name": "Hot Climate" },
+    { "id": "rainy_region", "name": "Rainy Region" },
+    { "id": "school_day", "name": "School Day" },
+    { "id": "weekend", "name": "Weekend" },
+    { "id": "night_shift", "name": "Night Shift" },
+    { "id": "family_day", "name": "Family Day" }
+  ],
+  "activity_groups": [
+    { "id": "farming", "category": "farming", "risk_tags": ["outdoor", "work"], "activities": ["ploughing a field", "plowing a field", "sowing seeds", "planting crops", "harvesting rice", "harvesting wheat", "harvesting vegetables", "watering crops", "irrigating a field", "weeding a field", "spraying pesticide", "spreading fertilizer", "checking soil", "checking crop health", "working in an orchard", "working in a greenhouse", "feeding livestock", "milking cattle", "poultry care", "fish farming"] },
+    { "id": "field_management", "category": "farming", "risk_tags": ["outdoor", "work"], "activities": ["crop inspection", "seed selection", "seed treatment", "soil testing", "composting", "making compost", "mulching plants", "pruning trees", "grafting plants", "plant nursery work", "greenhouse watering", "drip irrigation", "canal cleaning", "pond cleaning", "farm fencing", "repairing farm tools", "loading grain", "unloading grain", "storing grain", "selling produce"] },
+    { "id": "running", "category": "outdoor", "risk_tags": ["outdoor", "health"], "activities": ["morning run", "evening run", "long-distance run", "sprint training", "marathon training", "half-marathon training", "trail running", "cross-country running", "jogging", "treadmill run", "interval running", "hill running", "beach running", "charity run", "school race", "warm-up run", "recovery run", "fitness run", "running club", "running practice"] },
+    { "id": "walking", "category": "outdoor", "risk_tags": ["outdoor", "health"], "activities": ["morning walk", "evening walk", "long walk", "neighborhood walk", "park walk", "beach walk", "nature walk", "brisk walking", "walking exercise", "walking to work", "walking to school", "walking tour", "heritage walk", "mall walk", "group walk", "charity walk", "dog walk", "sunrise walk", "sunset walk", "meditation walk"] },
+    { "id": "cycling", "category": "outdoor", "risk_tags": ["outdoor", "travel", "health"], "activities": ["cycling to work", "cycling to school", "morning cycling", "evening cycling", "road cycling", "mountain biking", "trail cycling", "bike touring", "cycling race", "cycling practice", "stationary bike workout", "group cycling", "family cycling", "beach cycling", "city cycling", "long bike ride", "short bike ride", "cycle delivery", "bicycle repair ride", "cycling club"] },
+    { "id": "team_sports", "category": "outdoor", "risk_tags": ["outdoor", "health"], "activities": ["playing cricket", "cricket practice", "playing football", "football practice", "playing hockey", "hockey practice", "playing basketball", "basketball practice", "playing volleyball", "volleyball practice", "playing baseball", "playing rugby", "playing kabaddi", "playing kho kho", "playing handball", "playing throwball", "playing ultimate frisbee", "team sports training", "school sports day", "sports tournament"] },
+    { "id": "individual_sports", "category": "outdoor", "risk_tags": ["outdoor", "health"], "activities": ["playing tennis", "tennis practice", "playing badminton", "badminton practice", "playing golf", "golf practice", "table tennis practice", "squash practice", "archery practice", "boxing training", "martial arts training", "wrestling practice", "skating practice", "roller skating", "skateboarding", "jump rope", "athletics practice", "long jump practice", "high jump practice", "sports coaching"] },
+    { "id": "water_sports", "category": "water", "risk_tags": ["outdoor", "water", "health"], "activities": ["swimming", "swimming practice", "open-water swimming", "pool training", "diving", "scuba diving", "snorkeling", "surfing", "paddle boarding", "kayaking", "canoeing", "white-water rafting", "river rafting", "sailing", "boating", "water skiing", "jet skiing", "water park visit", "beach sports", "fishing trip"] },
+    { "id": "travel", "category": "travel", "risk_tags": ["travel", "outdoor"], "activities": ["driving to work", "driving to school", "long drive", "road trip", "bus journey", "train journey", "metro journey", "auto-rickshaw ride", "taxi ride", "motorcycle ride", "scooter ride", "airport travel", "flight journey", "travel by car", "travel by bus", "travel by train", "travel by bike", "travel by boat", "travel to a village", "travel to another city"] },
+    { "id": "school", "category": "school", "risk_tags": ["school", "travel", "outdoor"], "activities": ["going to school", "going to college", "walking to class", "cycling to school", "school bus ride", "college bus ride", "attending a lecture", "attending a class", "school assembly", "college festival", "school sports day", "school picnic", "college outing", "exam day travel", "tuition class", "library visit", "campus tour", "laboratory class", "field trip", "school event"] },
+    { "id": "work_shift", "category": "work", "risk_tags": ["work", "outdoor"], "activities": ["construction work", "road work", "traffic duty", "security duty", "warehouse work", "factory shift", "delivery shift", "street vending", "loading goods", "unloading goods", "roof repair", "house painting", "plumbing work", "electrical work", "landscaping work", "cleaning work", "outdoor office work", "night shift", "morning shift", "field inspection"] },
+    { "id": "delivery", "category": "work", "risk_tags": ["work", "travel", "outdoor"], "activities": ["food delivery", "parcel delivery", "grocery delivery", "medicine delivery", "document delivery", "courier work", "bike delivery", "car delivery", "delivery route", "warehouse delivery", "customer pickup", "package pickup", "restaurant delivery", "same-day delivery", "local delivery", "long-distance delivery", "delivery by scooter", "delivery by bicycle", "delivery by van", "delivery shift"] },
+    { "id": "photography", "category": "outdoor", "risk_tags": ["outdoor", "creative"], "activities": ["landscape photography", "street photography", "portrait photography", "wedding photography", "wildlife photography", "bird photography", "nature photography", "sunrise photography", "sunset photography", "rain photography", "cloud photography", "travel photography", "festival photography", "sports photography", "fashion photography", "architecture photography", "night photography", "product photography outdoors", "photo walk", "video shoot"] },
+    { "id": "events", "category": "outdoor", "risk_tags": ["outdoor", "work", "travel"], "activities": ["outdoor wedding", "garden party", "birthday party", "school function", "college function", "music concert", "food festival", "cultural festival", "religious festival", "street festival", "sports event", "charity event", "community meeting", "public meeting", "open-air theatre", "parade", "fair", "exhibition", "conference travel", "event setup"] },
+    { "id": "picnic", "category": "outdoor", "risk_tags": ["outdoor", "family"], "activities": ["family picnic", "school picnic", "college picnic", "park picnic", "beach picnic", "lakeside picnic", "forest picnic", "birthday picnic", "office picnic", "friends picnic", "weekend picnic", "sunrise picnic", "sunset picnic", "picnic lunch", "picnic breakfast", "picnic games", "picnic cooking", "picnic photography", "picnic camping", "picnic with children"] },
+    { "id": "camping", "category": "outdoor", "risk_tags": ["outdoor", "health"], "activities": ["tent camping", "car camping", "family camping", "school camping", "forest camping", "beach camping", "mountain camping", "campfire evening", "camp cooking", "camp setup", "camp cleanup", "backpacking", "overnight camping", "weekend camping", "camping with friends", "camping with children", "wild camping", "nature camp", "scout camp", "camping trip"] },
+    { "id": "gardening", "category": "outdoor", "risk_tags": ["outdoor", "work"], "activities": ["home gardening", "terrace gardening", "balcony gardening", "vegetable gardening", "flower gardening", "plant watering", "tree planting", "lawn mowing", "hedge trimming", "leaf cleaning", "garden digging", "garden composting", "garden pruning", "plant repotting", "seed planting", "garden pest control", "garden landscaping", "community gardening", "school gardening", "park gardening"] },
+    { "id": "pets", "category": "pets", "risk_tags": ["pets", "outdoor", "health"], "activities": ["walking the dog", "walking the puppy", "walking the cat", "playing with a dog", "playing with a cat", "pet grooming", "pet bathing", "taking a pet to the vet", "feeding a pet", "feeding animals", "cleaning a pet area", "training a puppy", "training a dog", "pet photography", "pet travel", "taking a pet to a park", "taking a pet to the beach", "buying pet food", "rescuing an animal", "checking livestock"] },
+    { "id": "shopping", "category": "travel", "risk_tags": ["travel", "outdoor"], "activities": ["grocery shopping", "shopping for clothes", "shopping at a mall", "shopping at a market", "street market visit", "vegetable market visit", "fruit market visit", "buying medicines", "buying school supplies", "buying electronics", "buying furniture", "buying farm tools", "shopping for shoes", "shopping for groceries", "supermarket visit", "weekly shopping", "festival shopping", "shopping for gifts", "shopping for books", "shopping trip"] },
+    { "id": "religious", "category": "outdoor", "risk_tags": ["travel", "outdoor", "health"], "activities": ["visiting a temple", "visiting a mosque", "visiting a church", "visiting a gurudwara", "attending prayer", "attending puja", "attending aarti", "temple festival", "mosque gathering", "church service", "gurudwara service", "religious procession", "pilgrimage", "walking pilgrimage", "visiting a shrine", "visiting a monastery", "religious event", "community prayer", "festival prayer", "morning worship"] },
+    { "id": "health", "category": "health", "risk_tags": ["health", "travel"], "activities": ["doctor appointment", "hospital visit", "clinic visit", "medical checkup", "dental appointment", "eye checkup", "blood test", "health screening", "vaccination visit", "therapy appointment", "physiotherapy", "walking for health", "medicine pickup", "visiting a patient", "health camp", "blood donation", "medical travel", "caregiver visit", "wellness appointment", "emergency travel"] },
+    { "id": "home", "category": "home", "risk_tags": ["work"], "activities": ["house cleaning", "washing clothes", "doing laundry", "cooking lunch", "cooking dinner", "grocery preparation", "home repair", "roof cleaning", "painting a room", "moving furniture", "moving house", "repairing a fan", "repairing plumbing", "repairing electricity", "cleaning windows", "cleaning the balcony", "washing the car", "organizing a room", "home gardening", "home decoration"] },
+    { "id": "social", "category": "outdoor", "risk_tags": ["travel", "outdoor", "family"], "activities": ["visiting family", "visiting friends", "birthday celebration", "family dinner", "friends dinner", "lunch outing", "coffee outing", "meeting friends", "family reunion", "neighborhood meeting", "community gathering", "house party", "birthday gathering", "wedding visit", "anniversary celebration", "movie outing", "shopping with friends", "day out with family", "date outing", "social visit"] },
+    { "id": "creative", "category": "outdoor", "risk_tags": ["outdoor", "creative"], "activities": ["painting outdoors", "drawing outdoors", "sketching in a park", "writing outdoors", "reading in a park", "music practice outdoors", "street performance", "dance practice outdoors", "drama rehearsal", "craft market", "pottery workshop", "art exhibition visit", "book fair visit", "poetry event", "open mic event", "outdoor design work", "making a short film", "recording a video", "recording a podcast outdoors", "creative workshop"] },
+    { "id": "tourism", "category": "travel", "risk_tags": ["travel", "outdoor"], "activities": ["city sightseeing", "museum visit", "monument visit", "fort visit", "palace visit", "waterfall visit", "lake visit", "beach sightseeing", "hill station visit", "wildlife safari", "zoo visit", "botanical garden visit", "heritage walk", "village tourism", "food tour", "market tour", "temple tour", "photography tour", "local guide work", "tour group travel"] },
+    { "id": "fitness", "category": "health", "risk_tags": ["outdoor", "health"], "activities": ["outdoor yoga", "indoor yoga", "morning stretching", "evening stretching", "breathing exercise", "meditation outdoors", "fitness class", "crossfit workout", "weight training", "bodyweight workout", "dance workout", "aerobics class", "zumba class", "pilates class", "calisthenics", "recovery exercise", "mobility training", "personal training", "health walk", "wellness retreat"] },
+    { "id": "emergency", "category": "work", "risk_tags": ["travel", "work", "health"], "activities": ["emergency response", "rescue operation", "disaster relief", "flood relief", "fire response", "ambulance duty", "search operation", "evacuation support", "relief material delivery", "emergency shelter setup", "first aid camp", "rescue training", "fire drill", "safety inspection", "disaster drill", "storm response", "road accident response", "missing person search", "emergency medical travel", "public safety duty"] },
+    { "id": "marine", "category": "water", "risk_tags": ["water", "work", "outdoor"], "activities": ["fishing at sea", "fishing on a lake", "fishing in a river", "boat maintenance", "ship maintenance", "port work", "harbor work", "coast guard patrol", "lifeguard duty", "marine survey", "ocean research", "beach cleanup", "coastal inspection", "sea transport", "river transport", "ferry duty", "boat tour", "harbor delivery", "aquaculture work", "marine photography"] },
+    { "id": "office_travel", "category": "travel", "risk_tags": ["travel", "work"], "activities": ["office commute", "client visit", "business meeting", "business trip", "work conference", "site visit", "field meeting", "sales visit", "customer visit", "team outing", "office picnic", "company event", "job interview travel", "workshop travel", "training session travel", "interview visit", "office relocation", "business lunch", "project inspection", "work travel"] },
+    { "id": "local_services", "category": "travel", "risk_tags": ["travel", "work", "outdoor"], "activities": ["bank visit", "post office visit", "government office visit", "police station visit", "court visit", "passport office visit", "railway station visit", "bus station visit", "fuel station visit", "vehicle service", "vehicle inspection", "driving test", "document submission", "utility bill visit", "internet service visit", "repair service visit", "appliance service", "rental inspection", "property visit", "home inspection"] }
+  ]
+}

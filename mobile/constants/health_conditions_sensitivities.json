@@ -1,0 +1,86 @@
+{
+  "conditions": [
+    {
+      "id": "none",
+      "name": "No Conditions / Optimal Health",
+      "icon": "✨",
+      "category": "General",
+      "description": "No specific environmental or respiratory sensitivities",
+      "weatherTriggers": "None",
+      "severity": "none"
+    },
+    {
+      "id": "asthma",
+      "name": "Asthma & Respiratory",
+      "icon": "🫁",
+      "category": "Respiratory",
+      "description": "Airway sensitivity to high particulate density, ozone or cold air",
+      "weatherTriggers": "AQI > 100, PM2.5 > 35 µg/m³, Humidity > 85% or < 25%",
+      "severity": "high"
+    },
+    {
+      "id": "pollen_allergies",
+      "name": "Pollen & Dust Allergies",
+      "icon": "🌸",
+      "category": "Allergies",
+      "description": "Allergic rhinitis, seasonal pollen peaks and airborne spores",
+      "weatherTriggers": "High wind gusts (> 25 km/h) & dry sunny conditions",
+      "severity": "medium"
+    },
+    {
+      "id": "cardiovascular",
+      "name": "Cardiovascular Sensitivity",
+      "icon": "❤️",
+      "category": "Cardiovascular",
+      "description": "Heart workload elevated during sudden cold snaps or extreme heat",
+      "weatherTriggers": "Heat index > 35°C or Ambient temp < 8°C",
+      "severity": "high"
+    },
+    {
+      "id": "heat_sensitivity",
+      "name": "Heat Intolerance & Dehydration",
+      "icon": "☀️",
+      "category": "Thermoregulation",
+      "description": "Prone to heat exhaustion, heat cramps and rapid electrolyte loss",
+      "weatherTriggers": "Temperature > 33°C, UV Index > 8",
+      "severity": "medium"
+    },
+    {
+      "id": "arthritis",
+      "name": "Arthritis & Joint Sensitivity",
+      "icon": "🦴",
+      "category": "Musculoskeletal",
+      "description": "Joint stiffness exacerbated by cold dampness and barometric drops",
+      "weatherTriggers": "Rapid barometric pressure drop & Humidity > 75%",
+      "severity": "medium"
+    },
+    {
+      "id": "migraines",
+      "name": "Migraines & Barometric Shifts",
+      "icon": "⚡",
+      "category": "Neurological",
+      "description": "Headaches triggered by thunderstorm fronts and rapid pressure shifts",
+      "weatherTriggers": "Frontal storm shifts, Barometric drop > 5 hPa/3h",
+      "severity": "medium"
+    },
+    {
+      "id": "hypertension",
+      "name": "Hypertension / Blood Pressure",
+      "icon": "🩺",
+      "category": "Cardiovascular",
+      "description": "Vascular constriction during severe cold or acute heat waves",
+      "weatherTriggers": "Sudden temperature drops < 10°C or Heat waves > 36°C",
+      "severity": "medium"
+    },
+    {
+      "id": "cold_bronchospasm",
+      "name": "Cold-Induced Bronchospasm",
+      "icon": "❄️",
+      "category": "Respiratory",
+      "description": "Exercise-induced coughing and constriction in crisp winter air",
+      "weatherTriggers": "Temperature < 5°C with wind chill",
+      "severity": "medium"
+    }
+  ]
+}
+
