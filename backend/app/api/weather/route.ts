@@ -83,9 +83,16 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch live air quality telemetry concurrently
-    let aqiData = {
+    let aqiData: {
+      value: number;
+      status: "Good" | "Moderate" | "Sensitive" | "Unhealthy" | "Hazardous";
+      pm25: number;
+      pm10: number;
+      no2: number;
+      o3: number;
+    } = {
       value: 42,
-      status: "Good" as const,
+      status: "Good",
       pm25: 9.2,
       pm10: 18.5,
       no2: 14.0,

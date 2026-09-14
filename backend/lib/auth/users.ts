@@ -10,36 +10,27 @@ export interface UserRecord {
 }
 
 function getUsersFilePath(): string {
-  const possiblePaths = [
-    path.join(process.cwd(), "users.json"),
-    path.join(process.cwd(), "backend", "users.json"),
-  ];
-
-  for (const p of possiblePaths) {
-    if (fs.existsSync(p)) {
-      return p;
-    }
+  // In Vercel serverless functions, cwd is the backend directory
+  const rootUsersPath = path.join(process.cwd(), "users.json");
+  if (fs.existsSync(/*turbopackIgnore: true*/ rootUsersPath)) {
+    return rootUsersPath;
   }
-
-  // If running from root directory, prefer backend/users.json if backend folder exists
   const backendUsersPath = path.join(process.cwd(), "backend", "users.json");
-  if (fs.existsSync(path.join(process.cwd(), "backend"))) {
+  if (fs.existsSync(/*turbopackIgnore: true*/ backendUsersPath)) {
     return backendUsersPath;
   }
-
-  // Fallback default
-  return path.join(process.cwd(), "users.json");
+  return rootUsersPath;
 }
 
 export function readUsers(): UserRecord[] {
   const filePath = getUsersFilePath();
   try {
-    if (!fs.existsSync(filePath)) {
+    if (!fs.existsSync(/*turbopackIgnore: true*/ filePath)) {
       // Initialize with empty array if file does not exist
       fs.writeFileSync(filePath, JSON.stringify([], null, 2), "utf-8");
       return [];
     }
-    const raw = fs.readFileSync(filePath, "utf-8");
+    const raw = fs.readFileSync(/*turbopackIgnore: true*/ filePath, "utf-8");
     return JSON.parse(raw);
   } catch (err) {
     console.error("Error reading users.json:", err);
